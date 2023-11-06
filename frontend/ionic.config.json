@@ -1,0 +1,7 @@
+{
+  "name": "agui",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

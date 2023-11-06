@@ -1,0 +1,9 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+import "pb/mate.proto";
+// Ack 格式.
+message Ack {
+	string file = 1;
+	repeated Mate mates = 2;
+}

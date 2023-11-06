@@ -4,18 +4,26 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"gitee.com/xuender/gca"
+	"github.com/xuender/ag-ui/app"
+	"github.com/xuender/ag-ui/pb"
 )
 
 func main() {
+	env := pb.NewEnv()
+
+	flag.Uint64Var(&env.Port, "port", env.GetPort(), "server port")
+	flag.StringVar(&env.Upgrade, "upgrade", env.GetUpgrade(), "upgrade file")
 	flag.Usage = usage
 	flag.Parse()
 
-	// TODO: agui
+	app.InitApp().Run(int(env.GetPort()), env.GetUpgrade(), gca.NewOption().Maximized(true))
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "agui\n\n")
-	fmt.Fprintf(os.Stderr, "TODO: agui.\n\n")
+	fmt.Fprintf(os.Stderr, "ag-ui\n\n")
+	fmt.Fprintf(os.Stderr, "agui.\n\n")
 	fmt.Fprintf(os.Stderr, "Usage: %s [flags]\n", os.Args[0])
 	flag.PrintDefaults()
 	os.Exit(1)

@@ -1,0 +1,15 @@
+{
+  "/ws": {
+    "target": "http://127.0.0.1:8080",
+    "secure": false,
+    "ws": true
+  },
+  "/api/": {
+    "target": "http://127.0.0.1:8080",
+    "secure": false
+  },
+  "/app/": {
+    "target": "http://127.0.0.1:8080",
+    "secure": false
+  }
+}

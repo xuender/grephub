@@ -1,0 +1,9 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+import "pb/ack.proto";
+import "pb/query.proto";
+message Result {
+	Query query = 1;
+	repeated Ack acks = 2;
+}

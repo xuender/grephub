@@ -1,0 +1,11 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+
+import "pb/query.proto";
+import "pb/ack.proto";
+// Msg 消息.
+message Msg {
+	Query query = 1;
+	repeated Ack acks = 2;
+}

@@ -23,11 +23,18 @@ watch-test:
 clean:
 	rm -rf dist
 
-proto:
+proto: protojs
 	protoc --go_out=. pb/*.proto
+
+protojs:
+	cd frontend && node_modules/.bin/pbjs -t static-module -w commonjs -o src/pb.js ../pb/*.proto
+	cd frontend && node_modules/.bin/pbts -o src/pb.d.ts src/pb.js
 
 build:
 	go build \
 	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
   -o dist/ag-ui main.go
+
+wire:
+	wire gen ${PACKAGE}/app

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+// Query .
+message Query {
+	string pattern = 1;
+	uint32 maxCount = 2;
+	repeated string paths = 3;
+}

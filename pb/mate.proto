@@ -1,0 +1,10 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+import "pb/hit.proto";
+// Mate ackmate.
+message Mate {
+	string text = 1;
+	uint32 row = 2;
+	repeated Hit hits = 3;
+}

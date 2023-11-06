@@ -1,0 +1,7 @@
+syntax = "proto3";
+package pb;
+option go_package = "./pb";
+// Config 配置.
+message Config {
+	string path = 1;
+}
