@@ -1,12 +1,14 @@
 package ag
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/exec"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -30,31 +32,6 @@ func (p *Service) Router(group *gin.RouterGroup) {
 	group.DELETE("", p.delete)
 }
 
-func (p *Service) Say1(msg *pb.Msg, conn *websocket.Conn) {
-	slog.Info("say", "msg", msg)
-
-	if len(msg.GetQuery().GetPaths()) == 0 {
-		msg.Query.Paths = []string{los.Must(os.Getwd())}
-	}
-
-	data, _ := proto.Marshal(msg)
-	los.Must0(conn.WriteMessage(websocket.BinaryMessage, data))
-
-	args := []string{}
-
-	if msg.GetQuery().GetMaxCount() > 0 {
-		args = append(args, "--max-count", types.Itoa(msg.GetQuery().GetMaxCount()))
-	}
-
-	args = append(args, msg.GetQuery().GetPaths()...)
-
-	msg.Acks = pb.NewAcks(p.Ag(msg.GetQuery().GetPattern(), args...))
-
-	msg.Query = nil
-	data, _ = proto.Marshal(msg)
-	los.Must0(conn.WriteMessage(websocket.BinaryMessage, data))
-}
-
 func (p *Service) Say(msg *pb.Msg, conn *websocket.Conn) {
 	slog.Info("say", "msg", msg)
 
@@ -72,12 +49,17 @@ func (p *Service) Say(msg *pb.Msg, conn *websocket.Conn) {
 	}
 
 	args = append(args, msg.GetQuery().GetPaths()...)
+	size := 100
+	acks := make(chan *pb.Ack, size)
 
-	msg.Acks = pb.NewAcks(p.Ag(msg.GetQuery().GetPattern(), args...))
+	go p.AsyncAg(acks, msg.GetQuery().GetPattern(), args...)
 
-	msg.Query = nil
-	data, _ = proto.Marshal(msg)
-	los.Must0(conn.WriteMessage(websocket.BinaryMessage, data))
+	for ack := range acks {
+		msg := &pb.Msg{Acks: []*pb.Ack{ack}}
+		data, _ := proto.Marshal(msg)
+
+		los.Must0(conn.WriteMessage(websocket.BinaryMessage, data))
+	}
 }
 
 func (p *Service) delete(ctx *gin.Context) {
@@ -129,4 +111,61 @@ func (p *Service) Ag(pattern string, params ...string) string {
 	}
 
 	return stdOut.String()
+}
+
+func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string) {
+	var (
+		ctxTimeout, cancel = context.WithTimeout(context.Background(), time.Minute)
+		args               = []string{"--ackmate", pattern}
+	)
+
+	p.cancel = cancel
+
+	args = append(args, params...)
+
+	cmd := exec.CommandContext(ctxTimeout, "ag", args...)
+	stdout := los.Must(cmd.StdoutPipe())
+	reader := bufio.NewReader(stdout)
+	group := sync.WaitGroup{}
+
+	group.Add(1)
+
+	go func() {
+		defer group.Done()
+
+		var (
+			ack   *pb.Ack
+			isNew = true
+		)
+
+		for {
+			line, _, err := reader.ReadLine()
+			if err != nil {
+				break
+			}
+
+			switch {
+			case isNew:
+				ack = &pb.Ack{}
+				ack.File = string(line)[1:]
+				isNew = false
+			case len(line) == 0:
+				acks <- ack
+
+				isNew = true
+			default:
+				ack.Mates = append(ack.GetMates(), pb.NewMate(string(line)))
+			}
+		}
+
+		if !isNew {
+			acks <- ack
+		}
+	}()
+
+	_ = cmd.Run()
+
+	group.Wait()
+
+	close(acks)
 }

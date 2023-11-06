@@ -13,6 +13,7 @@ import {
 import { addIcons } from 'ionicons';
 import { open } from 'ionicons/icons';
 import { CarbonModule } from 'kcarbon';
+import escape from 'escape-html';
 
 import { pb } from 'src/pb';
 
@@ -58,14 +59,14 @@ export class AckComponent {
         hit.col = 0;
       }
 
-      list.push(mate.text.substring(start, hit.col));
+      list.push(escape(mate.text.substring(start, hit.col)));
       list.push('<b>');
-      list.push(mate!.text.substring(hit.col, hit.col + hit.len));
+      list.push(escape(mate!.text.substring(hit.col, hit.col + hit.len)));
       list.push('</b>');
       start = hit.col + hit.len;
     }
 
-    list.push(mate.text.substring(start));
+    list.push(escape(mate.text.substring(start)));
 
     return list.join('');
   }

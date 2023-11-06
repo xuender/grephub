@@ -71,7 +71,6 @@ export class HomePage {
 
       if (msg.acks && msg.acks.length) {
         this.acks.push(...msg.acks);
-        console.log(this.acks);
       }
     });
   }
