@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xuender/kit/los"
 	"github.com/xuender/kit/types"
 )
 
@@ -28,9 +27,20 @@ func NewHits(text string) []*Hit {
 
 	for idx, col := range cols {
 		strs := strings.Split(col, " ")
+
+		col, err := types.ParseInteger[uint32](strs[0])
+		if err != nil {
+			continue
+		}
+
+		length, err := types.ParseInteger[uint32](strs[1])
+		if err != nil {
+			continue
+		}
+
 		hits[idx] = &Hit{
-			Col: los.Must(types.ParseInteger[uint32](strs[0])),
-			Len: los.Must(types.ParseInteger[uint32](strs[1])),
+			Col: col,
+			Len: length,
 		}
 	}
 

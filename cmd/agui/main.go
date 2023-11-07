@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"gitee.com/xuender/gca"
 	"github.com/xuender/ag-ui/app"
 	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/gca"
 )
 
 func main() {

@@ -7,15 +7,16 @@
 package app
 
 import (
-	"gitee.com/xuender/gca"
 	"github.com/xuender/ag-ui/ag"
 	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/gca"
 )
 
 // Injectors from wire.go:
 
 func InitApp() *gca.App[*pb.Msg] {
-	service := ag.NewService()
+	config := pb.NewConfig()
+	service := ag.NewService(config)
 	app := NewApp(service)
 	return app
 }

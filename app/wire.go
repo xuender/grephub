@@ -4,16 +4,17 @@
 package app
 
 import (
-	"gitee.com/xuender/gca"
 	"github.com/google/wire"
 	"github.com/xuender/ag-ui/ag"
 	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/gca"
 )
 
 func InitApp() *gca.App[*pb.Msg] {
 	wire.Build(
 		NewApp,
 		ag.NewService,
+		pb.NewConfig,
 	)
 
 	return gca.NewApp[*pb.Msg]()

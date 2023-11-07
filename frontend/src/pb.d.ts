@@ -109,8 +109,11 @@ export namespace pb {
     /** Properties of a Config. */
     interface IConfig {
 
-        /** Config path */
-        path?: (string|null);
+        /** Config query */
+        query?: (pb.IQuery|null);
+
+        /** Config dirs */
+        dirs?: (string[]|null);
     }
 
     /** Represents a Config. */
@@ -122,8 +125,11 @@ export namespace pb {
          */
         constructor(properties?: pb.IConfig);
 
-        /** Config path. */
-        public path: string;
+        /** Config query. */
+        public query?: (pb.IQuery|null);
+
+        /** Config dirs. */
+        public dirs: string[];
 
         /**
          * Creates a new Config instance using the specified properties.
@@ -527,11 +533,23 @@ export namespace pb {
     /** Properties of a Msg. */
     interface IMsg {
 
+        /** Msg type */
+        type?: (pb.Type|null);
+
         /** Msg query */
         query?: (pb.IQuery|null);
 
-        /** Msg acks */
-        acks?: (pb.IAck[]|null);
+        /** Msg ack */
+        ack?: (pb.IAck|null);
+
+        /** Msg open */
+        open?: (string|null);
+
+        /** Msg select */
+        select?: (string|null);
+
+        /** Msg dirs */
+        dirs?: (string[]|null);
     }
 
     /** Represents a Msg. */
@@ -543,11 +561,23 @@ export namespace pb {
          */
         constructor(properties?: pb.IMsg);
 
+        /** Msg type. */
+        public type: pb.Type;
+
         /** Msg query. */
         public query?: (pb.IQuery|null);
 
-        /** Msg acks. */
-        public acks: pb.IAck[];
+        /** Msg ack. */
+        public ack?: (pb.IAck|null);
+
+        /** Msg open. */
+        public open: string;
+
+        /** Msg select. */
+        public select: string;
+
+        /** Msg dirs. */
+        public dirs: string[];
 
         /**
          * Creates a new Msg instance using the specified properties.
@@ -627,6 +657,16 @@ export namespace pb {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    /** Type enum. */
+    enum Type {
+        config = 0,
+        query = 1,
+        ack = 2,
+        open = 3,
+        select = 4,
+        stop = 5
+    }
+
     /** Properties of a Query. */
     interface IQuery {
 
@@ -638,6 +678,9 @@ export namespace pb {
 
         /** Query paths */
         paths?: (string[]|null);
+
+        /** Query types */
+        types?: (string[]|null);
     }
 
     /** Represents a Query. */
@@ -657,6 +700,9 @@ export namespace pb {
 
         /** Query paths. */
         public paths: string[];
+
+        /** Query types. */
+        public types: string[];
 
         /**
          * Creates a new Query instance using the specified properties.

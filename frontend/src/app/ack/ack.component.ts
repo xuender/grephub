@@ -16,6 +16,7 @@ import { CarbonModule } from 'kcarbon';
 import escape from 'escape-html';
 
 import { pb } from 'src/pb';
+import { ApiService } from '../api/api.service';
 
 @Component({
   selector: 'app-ack',
@@ -38,8 +39,17 @@ import { pb } from 'src/pb';
 export class AckComponent {
   @Input()
   item?: pb.IAck;
-  constructor() {
+  constructor(private api: ApiService) {
     addIcons({ open });
+  }
+
+  open(file: string | undefined | null) {
+    console.log('open', file);
+    if (!file) {
+      return;
+    }
+
+    this.api.doOpen(file);
   }
 
   html(mate: pb.IMate) {

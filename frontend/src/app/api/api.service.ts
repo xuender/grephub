@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastController, ToastOptions } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { informationCircle } from 'ionicons/icons';
 import { NextObserver, map, share } from 'rxjs';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 
@@ -13,6 +15,7 @@ export class ApiService {
   onOpen$: NextObserver<Event> = {
     next: () => {
       console.log('连接开启');
+      this.send({ type: pb.Type.config });
     },
   };
   onClose$: NextObserver<CloseEvent> = {
@@ -28,7 +31,7 @@ export class ApiService {
     serializer: (v) => v as ArrayBuffer,
     deserializer: (v) => v.data,
   });
-  onMsg$ = this.ws.pipe(
+  private onMsg$ = this.ws.pipe(
     map((msg) => {
       const buf = new Uint8Array(msg as ArrayBuffer);
 
@@ -36,11 +39,109 @@ export class ApiService {
     }),
     share()
   );
-  constructor(private http: HttpClient, private toastCtrl: ToastController) {}
+  private funcs = new Map<pb.Type, any>([
+    [pb.Type.config, this.onConfig],
+    [pb.Type.query, this.onQuery],
+    [pb.Type.ack, this.onAck],
+    [pb.Type.open, this.onOpen],
+    [pb.Type.select, this.onSelect],
+    [pb.Type.stop, this.onStop],
+  ]);
+  dirs: string[] = [];
+  isRun = false;
+  query: pb.IQuery = { maxCount: 1, pattern: '', types: [] };
+  acks: pb.IAck[] = [];
+  constructor(private http: HttpClient, private toastCtrl: ToastController) {
+    addIcons({ informationCircle });
+    this.onMsg$.subscribe((msg) => {
+      console.log('onMsg', msg);
 
-  send(data: pb.IMsg) {
-    const m = pb.Msg.create(data);
-    this.ws.next(pb.Msg.encode(m).finish());
+      const func = this.funcs.get(msg.type);
+      func.apply(this, [msg]);
+    });
+  }
+
+  hasDir(dir: string) {
+    return this.dirs.includes(dir);
+  }
+
+  addDir(dir: string) {
+    if (!this.query.paths) {
+      this.query.paths = [dir];
+
+      return;
+    }
+
+    if (this.query.paths.includes(dir)) {
+      this.query.paths = this.query.paths.filter((p) => p !== dir);
+
+      return;
+    }
+
+    this.query.paths.push(dir);
+  }
+
+  private onConfig(msg: pb.IMsg) {
+    if (msg.dirs) {
+      this.dirs = msg.dirs;
+    }
+
+    if (msg.query) {
+      this.query = msg.query;
+    }
+  }
+
+  private onQuery(msg: pb.IMsg) {
+    if (!msg.query) {
+      return;
+    }
+
+    this.query = msg.query;
+    this.acks = [];
+  }
+
+  private onAck(msg: pb.IMsg) {
+    if (!msg.ack) {
+      return;
+    }
+
+    this.acks.push(msg.ack);
+  }
+
+  private onOpen(msg: pb.IMsg) {
+    console.log('open', msg);
+  }
+
+  private onSelect(msg: pb.IMsg) {
+    console.log('select', msg);
+  }
+
+  private onStop(msg: pb.IMsg) {
+    console.log('stop', msg);
+    this.isRun = false;
+  }
+
+  doQuery() {
+    this.isRun = true;
+    this.send({ query: this.query, type: pb.Type.query });
+  }
+
+  private send(data: pb.IMsg) {
+    const msg = pb.Msg.create(data);
+    this.ws.next(pb.Msg.encode(msg).finish());
+  }
+
+  async doOpen(open: string) {
+    this.send({ open, type: pb.Type.open });
+    const toast = await this.toastCtrl.create({
+      message: `Open ${open}.`,
+      duration: 1000,
+    });
+    await toast.present();
+  }
+
+  doSelect() {
+    this.send({ type: pb.Type.select });
   }
 
   copy(text: string) {

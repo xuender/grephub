@@ -3,9 +3,9 @@ package app
 import (
 	"embed"
 
-	"gitee.com/xuender/gca"
 	"github.com/xuender/ag-ui/ag"
 	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/gca"
 )
 
 //go:embed www

@@ -6,4 +6,5 @@ message Query {
 	string pattern = 1;
 	uint32 maxCount = 2;
 	repeated string paths = 3;
+	repeated string types = 4;
 }
