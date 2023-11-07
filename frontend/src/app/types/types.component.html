@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelChanges()" color="danger">
+        <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>File types</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirmChanges()" color="primary">
+        <ion-icon name="checkmark-circle" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionInput)="searchbarInput($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light" class="ion-padding">
+  <ion-list id="modal-list" [inset]="true">
+    <ion-item *ngFor="let kv of filteredItems">
+      <ion-label>{{ kv[0] }}</ion-label>
+      <ion-checkbox slot="end" [value]="kv[0]" [checked]="isChecked(kv[0])" (ionChange)="checkboxChange($event)">{{
+        kv[1]
+        }}</ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>

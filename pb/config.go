@@ -3,9 +3,10 @@ package pb
 import (
 	"os"
 	"path/filepath"
-	"slices"
+	"sort"
 
 	"github.com/pelletier/go-toml/v2"
+	"github.com/samber/lo"
 	"github.com/xuender/kit/los"
 	"github.com/xuender/kit/oss"
 )
@@ -32,11 +33,12 @@ func NewConfig() *Config {
 }
 
 func (p *Config) Save() {
-	for _, dir := range p.GetQuery().GetPaths() {
-		if !slices.Contains(p.GetDirs(), dir) {
-			p.Dirs = append(p.GetDirs(), dir)
-		}
-	}
+	dirs := p.GetDirs()
+	dirs = append(dirs, p.GetQuery().GetPaths()...)
+
+	sort.Strings(dirs)
+	dirs = lo.Union(dirs)
+	p.Dirs = lo.Filter(dirs, func(dir string, _ int) bool { return oss.Exist(dir) })
 
 	dir := filepath.Join(los.Must(os.UserConfigDir()), "ag")
 	_ = os.MkdirAll(dir, oss.DefaultDirFileMod)

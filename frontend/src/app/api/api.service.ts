@@ -62,7 +62,22 @@ export class ApiService {
   }
 
   hasDir(dir: string) {
-    return this.dirs.includes(dir);
+    if (!this.query.paths) {
+      return false;
+    }
+
+    return this.query.paths.includes(dir);
+  }
+
+  count() {
+    let count = 0;
+    for (const ack of this.acks) {
+      if (ack.mates) {
+        count += ack.mates.length;
+      }
+    }
+
+    return count;
   }
 
   addDir(dir: string) {
@@ -113,7 +128,15 @@ export class ApiService {
   }
 
   private onSelect(msg: pb.IMsg) {
-    console.log('select', msg);
+    if (!msg.select) {
+      return;
+    }
+
+    if (!this.dirs) {
+      this.dirs = [];
+    }
+
+    this.dirs.push(msg.select);
   }
 
   private onStop(msg: pb.IMsg) {

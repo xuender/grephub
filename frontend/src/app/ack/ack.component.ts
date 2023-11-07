@@ -2,18 +2,15 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import {
   IonBadge,
-  IonButton,
-  IonButtons,
-  IonIcon,
   IonItem,
   IonItemDivider,
   IonItemGroup,
   IonLabel,
 } from '@ionic/angular/standalone';
+import escape from 'escape-html';
 import { addIcons } from 'ionicons';
 import { open } from 'ionicons/icons';
 import { CarbonModule } from 'kcarbon';
-import escape from 'escape-html';
 
 import { pb } from 'src/pb';
 import { ApiService } from '../api/api.service';
@@ -31,9 +28,6 @@ import { ApiService } from '../api/api.service';
     IonBadge,
     CommonModule,
     CarbonModule,
-    IonButton,
-    IonButtons,
-    IonIcon,
   ],
 })
 export class AckComponent {

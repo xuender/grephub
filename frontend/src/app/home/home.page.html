@@ -1,7 +1,7 @@
 <ion-menu contentId="main-content">
   <ion-header>
     <ion-toolbar>
-      <ion-title>搜索目录</ion-title>
+      <ion-title>Search dirs</ion-title>
       <ion-buttons slot="end">
         <ion-button color="primary" (click)="api.doSelect()">
           <ion-icon name="add-circle" slot="icon-only"></ion-icon>
@@ -19,10 +19,9 @@
 
   <ion-footer>
     <ion-list>
-      <ion-item>
-        <ion-select label="Types" [multiple]="true" [(ngModel)]="api.query.types">
-          <ion-select-option *ngFor="let kv of types" [value]="kv[0]">{{ kv[1] }}</ion-select-option>
-        </ion-select>
+      <ion-item [button]="true" [detail]="false" id="select-type">
+        <ion-label>Types</ion-label>
+        <div slot="end" id="selected-type">{{ api.query.types }}</div>
       </ion-item>
       <ion-item>
         <ion-input label="MaxCount" type="number" [(ngModel)]="api.query.maxCount"></ion-input>
@@ -66,10 +65,15 @@
 
 <ion-footer>
   <ion-item>
-    <ion-label>{{ api.query.pattern }}</ion-label>
-    <ion-badge slot="end">{{ api.acks.length }}</ion-badge>
-  </ion-item>
-  <ion-item>
-    {{ api.query | json}}
+    <ion-label>Pattern: {{ api.query.pattern }}</ion-label>
+    <ion-label>File: {{ api.acks.length }}</ion-label>
+    <ion-label>Count: {{ api.count() }}</ion-label>
   </ion-item>
 </ion-footer>
+
+<ion-modal trigger="select-type" #modal>
+  <ng-template>
+    <app-types class="ion-page" [selected]="api.query.types" (selectionChange)="selectionChanged($event)"
+      (selectionCancel)="modal.dismiss()"></app-types>
+  </ng-template>
+</ion-modal>

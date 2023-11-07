@@ -1,14 +1,9 @@
 <ion-item-group>
   <ion-item-divider>
     <ion-label>{{ item?.file }}</ion-label>
-    <ion-buttons slot="end">
-      <ion-button (click)="open(item?.file)">
-        <ion-icon name="open" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-item-divider>
 
-  <ion-item *ngFor="let m of item?.mates">
+  <ion-item *ngFor="let m of item?.mates" button="true" (click)="open(item?.file)">
     <ion-badge slot="start">{{ m.row }}</ion-badge>
     <ion-label [innerHTML]="html(m) | safeHtml"></ion-label>
   </ion-item>
