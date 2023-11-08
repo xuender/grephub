@@ -1,6 +1,8 @@
 package ag
 
 import (
+	"os/exec"
+
 	"github.com/gorilla/websocket"
 	"github.com/xuender/ag-ui/pb"
 	"github.com/xuender/kit/los"
@@ -15,4 +17,7 @@ func Install(conn *websocket.Conn) bool {
 	los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(msg))))
 
 	return true
+}
+
+func HideWindow(_ *exec.Cmd) {
 }

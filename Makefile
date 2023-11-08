@@ -33,16 +33,19 @@ protojs:
 
 build: clean
 	./frontend/node_modules/.bin/ng build --base-href ./
+
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 	go build \
 	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
   -o dist/agui-linux-amd64 cmd/agui/main.go
+
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
 	go build \
 	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
   -o dist/agui-darwin-amd64 cmd/agui/main.go
+
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
 	go build \
 	-ldflags "-s -w -H=windowsgui -X 'github.com/xuender/kit/oss.Version=${VERSION}' \

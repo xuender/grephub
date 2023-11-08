@@ -3,6 +3,8 @@ package ag
 import (
 	_ "embed"
 	"os"
+	"os/exec"
+	"syscall"
 
 	"github.com/gorilla/websocket"
 	"github.com/xuender/ag-ui/pb"
@@ -34,4 +36,8 @@ func createAg() error {
 	_, err := file.Write(_ag)
 
 	return err
+}
+
+func HideWindow(cmd *exec.Cmd) {
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 }

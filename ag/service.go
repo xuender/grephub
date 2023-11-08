@@ -150,8 +150,9 @@ func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string)
 	p.cancel = cancel
 
 	args = append(args, params...)
-
 	cmd := exec.CommandContext(ctxTimeout, _cmd, args...)
+	HideWindow(cmd)
+
 	stdout := los.Must(cmd.StdoutPipe())
 	reader := bufio.NewReader(stdout)
 
@@ -173,8 +174,6 @@ func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string)
 
 			break
 		}
-
-		slog.Info(string(line))
 
 		switch {
 		case isNew:

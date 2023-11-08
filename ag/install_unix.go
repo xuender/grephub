@@ -67,3 +67,6 @@ exit:
 
 	return true
 }
+
+func HideWindow(_ *exec.Cmd) {
+}
