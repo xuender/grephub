@@ -14,7 +14,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/samber/lo v1.38.1
 	github.com/stretchr/testify v1.8.4
-	github.com/xuender/gca v0.0.6
+	github.com/xuender/gca v0.0.7
 	github.com/xuender/kit v1.0.40
 	google.golang.org/protobuf v1.31.0
 

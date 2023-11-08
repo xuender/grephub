@@ -6,7 +6,6 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
-	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -35,7 +34,7 @@ func NewService(
 	cfg *pb.Config,
 ) *Service {
 	if oss.IsWindows() {
-		_cmd = "ag.exe"
+		_cmd = ".\\ag.exe"
 	}
 
 	serv := &Service{
@@ -74,6 +73,7 @@ func (p *Service) config(msg *pb.Msg, conn *websocket.Conn) {
 
 	msg.Dirs = p.cfg.GetDirs()
 	msg.Query = p.cfg.GetQuery()
+	msg.Type = pb.Type_config
 
 	los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(msg))))
 }
@@ -126,7 +126,6 @@ func (p *Service) selected(msg *pb.Msg, conn *websocket.Conn) {
 
 	p.cfg.Dirs = append(p.cfg.GetDirs(), dir)
 
-	p.cfg.Save()
 	p.config(msg, conn)
 }
 
@@ -141,6 +140,8 @@ func (p *Service) Say(msg *pb.Msg, conn *websocket.Conn) {
 }
 
 func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string) {
+	defer close(acks)
+
 	var (
 		ctxTimeout, cancel = context.WithTimeout(context.Background(), time.Minute)
 		args               = []string{"--ackmate", pattern}
@@ -153,48 +154,49 @@ func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string)
 	cmd := exec.CommandContext(ctxTimeout, _cmd, args...)
 	stdout := los.Must(cmd.StdoutPipe())
 	reader := bufio.NewReader(stdout)
-	group := sync.WaitGroup{}
 
-	group.Add(1)
+	if err := cmd.Start(); err != nil {
+		slog.Error("start", "err", err)
 
-	go func() {
-		defer group.Done()
+		return
+	}
 
-		var (
-			ack   *pb.Ack
-			isNew = true
-		)
+	var (
+		ack   *pb.Ack
+		isNew = true
+	)
 
-		for {
-			line, _, err := reader.ReadLine()
-			if err != nil {
-				break
-			}
+	for {
+		line, _, err := reader.ReadLine()
+		if err != nil {
+			slog.Error("ag", "err", err)
 
-			switch {
-			case isNew:
-				ack = &pb.Ack{}
-				ack.File = string(line)[1:]
-				isNew = false
-			case len(line) == 0:
-				acks <- ack
-
-				isNew = true
-			default:
-				if mate := pb.NewMate(string(line)); mate != nil {
-					ack.Mates = append(ack.GetMates(), mate)
-				}
-			}
+			break
 		}
 
-		if !isNew {
+		slog.Info(string(line))
+
+		switch {
+		case isNew:
+			ack = &pb.Ack{}
+			ack.File = string(line)[1:]
+			isNew = false
+		case len(line) == 0:
 			acks <- ack
+
+			isNew = true
+		default:
+			if mate := pb.NewMate(string(line)); mate != nil {
+				ack.Mates = append(ack.GetMates(), mate)
+			}
 		}
-	}()
+	}
 
-	_ = cmd.Run()
+	if !isNew {
+		acks <- ack
+	}
 
-	group.Wait()
-
-	close(acks)
+	if err := cmd.Wait(); err != nil {
+		slog.Error("wait", "err", err)
+	}
 }

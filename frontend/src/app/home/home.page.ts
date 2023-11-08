@@ -1,9 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   IonBadge,
   IonButton,
   IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonCol,
   IonContent,
   IonFooter,
   IonHeader,
@@ -16,6 +21,7 @@ import {
   IonMenuButton,
   IonModal,
   IonProgressBar,
+  IonRow,
   IonSearchbar,
   IonTitle,
   IonToggle,
@@ -57,13 +63,26 @@ import { TypesComponent } from '../types/types.component';
     FormsModule,
     IonInput,
     IonModal,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCol,
+    IonRow,
+    IonCardContent,
     TypesComponent,
   ],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   @ViewChild('modal', { static: true }) modal!: IonModal;
+  @ViewChild('menu', { static: true }) menu!: IonMenu;
   constructor(public api: ApiService) {
     addIcons({ cog, searchCircle, addCircle });
+  }
+
+  ngOnInit() {
+    if (this.menu) {
+      this.menu.open();
+    }
   }
 
   selectionChanged(types: string[]) {

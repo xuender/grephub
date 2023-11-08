@@ -45,8 +45,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
-github.com/xuender/gca v0.0.6 h1:8Qd+8cZ6orjvIflRxO9mtmBzDy3sGy+GR0+BVV2QoqA=
-github.com/xuender/gca v0.0.6/go.mod h1:ZTl489NHRLHMIz4niLh3AlXzBZMOyg4BdT88VaZayEs=
+github.com/xuender/gca v0.0.7 h1:JqbLoR+k2SBIk+V9B1pEezv1YWrgE+BAzqnDS6fFgb4=
+github.com/xuender/gca v0.0.7/go.mod h1:ZTl489NHRLHMIz4niLh3AlXzBZMOyg4BdT88VaZayEs=
 github.com/xuender/kit v1.0.40 h1:mj0b1QlgY2GY8fB6sDGX20Aqdn5ELlPdIHSABdYDwO8=
 github.com/xuender/kit v1.0.40/go.mod h1:Eh+cNelAMF4kdqorsWLLt9TmmqSo1vBjEoiMsj3Tp/8=
 go.uber.org/goleak v1.2.1 h1:NBol2c7O1ZokfZ0LEU9K6Whx/KnwvepVetCUhtKja4A=
