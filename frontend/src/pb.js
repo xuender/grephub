@@ -514,270 +514,6 @@ $root.pb = (function() {
         return Config;
     })();
 
-    pb.Env = (function() {
-
-        /**
-         * Properties of an Env.
-         * @memberof pb
-         * @interface IEnv
-         * @property {number|Long|null} [port] Env port
-         * @property {string|null} [cfg] Env cfg
-         * @property {string|null} [upgrade] Env upgrade
-         */
-
-        /**
-         * Constructs a new Env.
-         * @memberof pb
-         * @classdesc Represents an Env.
-         * @implements IEnv
-         * @constructor
-         * @param {pb.IEnv=} [properties] Properties to set
-         */
-        function Env(properties) {
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * Env port.
-         * @member {number|Long} port
-         * @memberof pb.Env
-         * @instance
-         */
-        Env.prototype.port = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
-
-        /**
-         * Env cfg.
-         * @member {string} cfg
-         * @memberof pb.Env
-         * @instance
-         */
-        Env.prototype.cfg = "";
-
-        /**
-         * Env upgrade.
-         * @member {string} upgrade
-         * @memberof pb.Env
-         * @instance
-         */
-        Env.prototype.upgrade = "";
-
-        /**
-         * Creates a new Env instance using the specified properties.
-         * @function create
-         * @memberof pb.Env
-         * @static
-         * @param {pb.IEnv=} [properties] Properties to set
-         * @returns {pb.Env} Env instance
-         */
-        Env.create = function create(properties) {
-            return new Env(properties);
-        };
-
-        /**
-         * Encodes the specified Env message. Does not implicitly {@link pb.Env.verify|verify} messages.
-         * @function encode
-         * @memberof pb.Env
-         * @static
-         * @param {pb.IEnv} message Env message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Env.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.port != null && Object.hasOwnProperty.call(message, "port"))
-                writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.port);
-            if (message.cfg != null && Object.hasOwnProperty.call(message, "cfg"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.cfg);
-            if (message.upgrade != null && Object.hasOwnProperty.call(message, "upgrade"))
-                writer.uint32(/* id 3, wireType 2 =*/26).string(message.upgrade);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified Env message, length delimited. Does not implicitly {@link pb.Env.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof pb.Env
-         * @static
-         * @param {pb.IEnv} message Env message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        Env.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes an Env message from the specified reader or buffer.
-         * @function decode
-         * @memberof pb.Env
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {pb.Env} Env
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Env.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.pb.Env();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1: {
-                        message.port = reader.uint64();
-                        break;
-                    }
-                case 2: {
-                        message.cfg = reader.string();
-                        break;
-                    }
-                case 3: {
-                        message.upgrade = reader.string();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        /**
-         * Decodes an Env message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof pb.Env
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {pb.Env} Env
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        Env.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies an Env message.
-         * @function verify
-         * @memberof pb.Env
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        Env.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            if (message.port != null && message.hasOwnProperty("port"))
-                if (!$util.isInteger(message.port) && !(message.port && $util.isInteger(message.port.low) && $util.isInteger(message.port.high)))
-                    return "port: integer|Long expected";
-            if (message.cfg != null && message.hasOwnProperty("cfg"))
-                if (!$util.isString(message.cfg))
-                    return "cfg: string expected";
-            if (message.upgrade != null && message.hasOwnProperty("upgrade"))
-                if (!$util.isString(message.upgrade))
-                    return "upgrade: string expected";
-            return null;
-        };
-
-        /**
-         * Creates an Env message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof pb.Env
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {pb.Env} Env
-         */
-        Env.fromObject = function fromObject(object) {
-            if (object instanceof $root.pb.Env)
-                return object;
-            var message = new $root.pb.Env();
-            if (object.port != null)
-                if ($util.Long)
-                    (message.port = $util.Long.fromValue(object.port)).unsigned = true;
-                else if (typeof object.port === "string")
-                    message.port = parseInt(object.port, 10);
-                else if (typeof object.port === "number")
-                    message.port = object.port;
-                else if (typeof object.port === "object")
-                    message.port = new $util.LongBits(object.port.low >>> 0, object.port.high >>> 0).toNumber(true);
-            if (object.cfg != null)
-                message.cfg = String(object.cfg);
-            if (object.upgrade != null)
-                message.upgrade = String(object.upgrade);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from an Env message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof pb.Env
-         * @static
-         * @param {pb.Env} message Env
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        Env.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            var object = {};
-            if (options.defaults) {
-                if ($util.Long) {
-                    var long = new $util.Long(0, 0, true);
-                    object.port = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                } else
-                    object.port = options.longs === String ? "0" : 0;
-                object.cfg = "";
-                object.upgrade = "";
-            }
-            if (message.port != null && message.hasOwnProperty("port"))
-                if (typeof message.port === "number")
-                    object.port = options.longs === String ? String(message.port) : message.port;
-                else
-                    object.port = options.longs === String ? $util.Long.prototype.toString.call(message.port) : options.longs === Number ? new $util.LongBits(message.port.low >>> 0, message.port.high >>> 0).toNumber(true) : message.port;
-            if (message.cfg != null && message.hasOwnProperty("cfg"))
-                object.cfg = message.cfg;
-            if (message.upgrade != null && message.hasOwnProperty("upgrade"))
-                object.upgrade = message.upgrade;
-            return object;
-        };
-
-        /**
-         * Converts this Env to JSON.
-         * @function toJSON
-         * @memberof pb.Env
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        Env.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for Env
-         * @function getTypeUrl
-         * @memberof pb.Env
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        Env.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/pb.Env";
-        };
-
-        return Env;
-    })();
-
     pb.Hit = (function() {
 
         /**
@@ -1289,6 +1025,7 @@ $root.pb = (function() {
          * @property {string|null} [open] Msg open
          * @property {string|null} [select] Msg select
          * @property {Array.<string>|null} [dirs] Msg dirs
+         * @property {string|null} [alert] Msg alert
          */
 
         /**
@@ -1356,6 +1093,14 @@ $root.pb = (function() {
         Msg.prototype.dirs = $util.emptyArray;
 
         /**
+         * Msg alert.
+         * @member {string} alert
+         * @memberof pb.Msg
+         * @instance
+         */
+        Msg.prototype.alert = "";
+
+        /**
          * Creates a new Msg instance using the specified properties.
          * @function create
          * @memberof pb.Msg
@@ -1392,6 +1137,8 @@ $root.pb = (function() {
             if (message.dirs != null && message.dirs.length)
                 for (var i = 0; i < message.dirs.length; ++i)
                     writer.uint32(/* id 6, wireType 2 =*/50).string(message.dirs[i]);
+            if (message.alert != null && Object.hasOwnProperty.call(message, "alert"))
+                writer.uint32(/* id 7, wireType 2 =*/58).string(message.alert);
             return writer;
         };
 
@@ -1452,6 +1199,10 @@ $root.pb = (function() {
                         message.dirs.push(reader.string());
                         break;
                     }
+                case 7: {
+                        message.alert = reader.string();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -1497,6 +1248,7 @@ $root.pb = (function() {
                 case 3:
                 case 4:
                 case 5:
+                case 6:
                     break;
                 }
             if (message.query != null && message.hasOwnProperty("query")) {
@@ -1522,6 +1274,9 @@ $root.pb = (function() {
                     if (!$util.isString(message.dirs[i]))
                         return "dirs: string[] expected";
             }
+            if (message.alert != null && message.hasOwnProperty("alert"))
+                if (!$util.isString(message.alert))
+                    return "alert: string expected";
             return null;
         };
 
@@ -1568,6 +1323,10 @@ $root.pb = (function() {
             case 5:
                 message.type = 5;
                 break;
+            case "alert":
+            case 6:
+                message.type = 6;
+                break;
             }
             if (object.query != null) {
                 if (typeof object.query !== "object")
@@ -1590,6 +1349,8 @@ $root.pb = (function() {
                 for (var i = 0; i < object.dirs.length; ++i)
                     message.dirs[i] = String(object.dirs[i]);
             }
+            if (object.alert != null)
+                message.alert = String(object.alert);
             return message;
         };
 
@@ -1614,6 +1375,7 @@ $root.pb = (function() {
                 object.ack = null;
                 object.open = "";
                 object.select = "";
+                object.alert = "";
             }
             if (message.type != null && message.hasOwnProperty("type"))
                 object.type = options.enums === String ? $root.pb.Type[message.type] === undefined ? message.type : $root.pb.Type[message.type] : message.type;
@@ -1630,6 +1392,8 @@ $root.pb = (function() {
                 for (var j = 0; j < message.dirs.length; ++j)
                     object.dirs[j] = message.dirs[j];
             }
+            if (message.alert != null && message.hasOwnProperty("alert"))
+                object.alert = message.alert;
             return object;
         };
 
@@ -1672,6 +1436,7 @@ $root.pb = (function() {
      * @property {number} open=3 open value
      * @property {number} select=4 select value
      * @property {number} stop=5 stop value
+     * @property {number} alert=6 alert value
      */
     pb.Type = (function() {
         var valuesById = {}, values = Object.create(valuesById);
@@ -1681,6 +1446,7 @@ $root.pb = (function() {
         values[valuesById[3] = "open"] = 3;
         values[valuesById[4] = "select"] = 4;
         values[valuesById[5] = "stop"] = 5;
+        values[valuesById[6] = "alert"] = 6;
         return values;
     })();
 

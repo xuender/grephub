@@ -12,6 +12,7 @@ message Msg {
 	string open = 4;
 	string select = 5;
 	repeated string dirs = 6;
+	string alert = 7;
 }
 
 enum Type {
@@ -21,4 +22,5 @@ enum Type {
 	open = 3;
 	select = 4;
 	stop = 5;
+	alert = 6;
 }

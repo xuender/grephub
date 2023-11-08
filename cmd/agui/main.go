@@ -6,19 +6,17 @@ import (
 	"os"
 
 	"github.com/xuender/ag-ui/app"
-	"github.com/xuender/ag-ui/pb"
 	"github.com/xuender/gca"
 )
 
 func main() {
-	env := pb.NewEnv()
+	var port uint64
 
-	flag.Uint64Var(&env.Port, "port", env.GetPort(), "server port")
-	flag.StringVar(&env.Upgrade, "upgrade", env.GetUpgrade(), "upgrade file")
+	flag.Uint64Var(&port, "port", 0, "server port")
 	flag.Usage = usage
 	flag.Parse()
 
-	app.InitApp().Run(int(env.GetPort()), env.GetUpgrade(), gca.NewOption().Maximized(true))
+	app.InitApp().Run(int(port), gca.NewOption().Maximized(true))
 }
 
 func usage() {

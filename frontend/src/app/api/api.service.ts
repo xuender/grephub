@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastController, ToastOptions } from '@ionic/angular/standalone';
+import {
+  AlertController,
+  ToastController,
+  ToastOptions,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircle } from 'ionicons/icons';
 import { NextObserver, map, share } from 'rxjs';
@@ -40,6 +44,7 @@ export class ApiService {
     share()
   );
   private funcs = new Map<pb.Type, any>([
+    [pb.Type.alert, this.onAlert],
     [pb.Type.config, this.onConfig],
     [pb.Type.query, this.onQuery],
     [pb.Type.ack, this.onAck],
@@ -51,7 +56,11 @@ export class ApiService {
   isRun = false;
   query: pb.IQuery = { maxCount: 1, pattern: '', types: [] };
   acks: pb.IAck[] = [];
-  constructor(private http: HttpClient, private toastCtrl: ToastController) {
+  constructor(
+    private http: HttpClient,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
+  ) {
     addIcons({ informationCircle });
     this.onMsg$.subscribe((msg) => {
       console.log('onMsg', msg);
@@ -94,6 +103,26 @@ export class ApiService {
     }
 
     this.query.paths.push(dir);
+  }
+
+  private async onAlert(msg: pb.IMsg) {
+    if (!msg.alert) {
+      return;
+    }
+
+    const alert = await this.alertCtrl.create({
+      header: 'The Silver Searcher',
+      subHeader: 'missing dependency library.',
+      inputs: [
+        {
+          type: 'text',
+          value: msg.alert,
+        },
+      ],
+      buttons: ['OK'],
+    });
+
+    await alert.present();
   }
 
   private onConfig(msg: pb.IMsg) {

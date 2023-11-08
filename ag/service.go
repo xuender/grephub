@@ -2,25 +2,26 @@ package ag
 
 import (
 	"bufio"
-	"bytes"
 	"context"
 	"log/slog"
-	"net/http"
 	"os"
 	"os/exec"
 	"sync"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 	"github.com/samber/lo"
 	"github.com/xuender/ag-ui/pb"
 	"github.com/xuender/kit/los"
+	"github.com/xuender/kit/oss"
 	"github.com/xuender/kit/types"
 	"google.golang.org/protobuf/proto"
 )
+
+// nolint
+var _cmd = "ag"
 
 type WsFunc func(*pb.Msg, *websocket.Conn)
 
@@ -33,6 +34,10 @@ type Service struct {
 func NewService(
 	cfg *pb.Config,
 ) *Service {
+	if oss.IsWindows() {
+		_cmd = "ag.exe"
+	}
+
 	serv := &Service{
 		funcs: make(map[pb.Type]WsFunc),
 		cfg:   cfg,
@@ -61,6 +66,11 @@ func (p *Service) stop(msg *pb.Msg, conn *websocket.Conn) {
 
 func (p *Service) config(msg *pb.Msg, conn *websocket.Conn) {
 	p.cfg.Save()
+
+	_, err := exec.LookPath(_cmd)
+	if err != nil && Install(conn) {
+		return
+	}
 
 	msg.Dirs = p.cfg.GetDirs()
 	msg.Query = p.cfg.GetQuery()
@@ -125,66 +135,9 @@ func (p *Service) open(msg *pb.Msg, _ *websocket.Conn) {
 	los.Must0(browser.OpenFile(msg.GetOpen()))
 }
 
-func (p *Service) Router(group *gin.RouterGroup) {
-	group.POST("", p.get)
-	group.DELETE("", p.delete)
-}
-
 func (p *Service) Say(msg *pb.Msg, conn *websocket.Conn) {
 	slog.Info("say", "msg", msg)
 	p.funcs[msg.GetType()](msg, conn)
-}
-
-func (p *Service) delete(ctx *gin.Context) {
-	if p.cancel == nil {
-		panic(ErrNoSearch)
-	}
-
-	p.cancel()
-	p.cancel = nil
-
-	ctx.Status(http.StatusNoContent)
-}
-
-func (p *Service) get(ctx *gin.Context) {
-	query := &pb.Query{}
-	los.Must0(ctx.Bind(query))
-
-	if query.GetPattern() == "" {
-		panic(ErrNoPattern)
-	}
-
-	if len(query.GetPaths()) == 0 {
-		pwd, _ := os.Getwd()
-		query.Paths = []string{pwd}
-	}
-
-	ctx.JSON(http.StatusOK, &pb.Result{
-		Query: query,
-		Acks:  pb.NewAcks(p.Ag(query.GetPattern(), query.GetPaths()...)),
-	})
-}
-
-func (p *Service) Ag(pattern string, params ...string) string {
-	var (
-		ctxTimeout, cancel = context.WithTimeout(context.Background(), time.Minute)
-		args               = []string{"--ackmate", pattern}
-	)
-
-	p.cancel = cancel
-
-	args = append(args, params...)
-
-	cmd := exec.CommandContext(ctxTimeout, "ag", args...)
-	stdOut := &bytes.Buffer{}
-
-	cmd.Stdout = stdOut
-
-	if err := cmd.Run(); err != nil {
-		return ""
-	}
-
-	return stdOut.String()
 }
 
 func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string) {
@@ -197,7 +150,7 @@ func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string)
 
 	args = append(args, params...)
 
-	cmd := exec.CommandContext(ctxTimeout, "ag", args...)
+	cmd := exec.CommandContext(ctxTimeout, _cmd, args...)
 	stdout := los.Must(cmd.StdoutPipe())
 	reader := bufio.NewReader(stdout)
 	group := sync.WaitGroup{}

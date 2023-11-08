@@ -209,115 +209,6 @@ export namespace pb {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
-    /** Properties of an Env. */
-    interface IEnv {
-
-        /** Env port */
-        port?: (number|Long|null);
-
-        /** Env cfg */
-        cfg?: (string|null);
-
-        /** Env upgrade */
-        upgrade?: (string|null);
-    }
-
-    /** Represents an Env. */
-    class Env implements IEnv {
-
-        /**
-         * Constructs a new Env.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: pb.IEnv);
-
-        /** Env port. */
-        public port: (number|Long);
-
-        /** Env cfg. */
-        public cfg: string;
-
-        /** Env upgrade. */
-        public upgrade: string;
-
-        /**
-         * Creates a new Env instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns Env instance
-         */
-        public static create(properties?: pb.IEnv): pb.Env;
-
-        /**
-         * Encodes the specified Env message. Does not implicitly {@link pb.Env.verify|verify} messages.
-         * @param message Env message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: pb.IEnv, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Encodes the specified Env message, length delimited. Does not implicitly {@link pb.Env.verify|verify} messages.
-         * @param message Env message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(message: pb.IEnv, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes an Env message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns Env
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): pb.Env;
-
-        /**
-         * Decodes an Env message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns Env
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): pb.Env;
-
-        /**
-         * Verifies an Env message.
-         * @param message Plain object to verify
-         * @returns `null` if valid, otherwise the reason why it is not
-         */
-        public static verify(message: { [k: string]: any }): (string|null);
-
-        /**
-         * Creates an Env message from a plain object. Also converts values to their respective internal types.
-         * @param object Plain object
-         * @returns Env
-         */
-        public static fromObject(object: { [k: string]: any }): pb.Env;
-
-        /**
-         * Creates a plain object from an Env message. Also converts values to other types if specified.
-         * @param message Env
-         * @param [options] Conversion options
-         * @returns Plain object
-         */
-        public static toObject(message: pb.Env, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-        /**
-         * Converts this Env to JSON.
-         * @returns JSON object
-         */
-        public toJSON(): { [k: string]: any };
-
-        /**
-         * Gets the default type url for Env
-         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns The default type url
-         */
-        public static getTypeUrl(typeUrlPrefix?: string): string;
-    }
-
     /** Properties of a Hit. */
     interface IHit {
 
@@ -550,6 +441,9 @@ export namespace pb {
 
         /** Msg dirs */
         dirs?: (string[]|null);
+
+        /** Msg alert */
+        alert?: (string|null);
     }
 
     /** Represents a Msg. */
@@ -578,6 +472,9 @@ export namespace pb {
 
         /** Msg dirs. */
         public dirs: string[];
+
+        /** Msg alert. */
+        public alert: string;
 
         /**
          * Creates a new Msg instance using the specified properties.
@@ -664,7 +561,8 @@ export namespace pb {
         ack = 2,
         open = 3,
         select = 4,
-        stop = 5
+        stop = 5,
+        alert = 6
     }
 
     /** Properties of a Query. */
