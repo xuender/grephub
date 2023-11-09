@@ -13,13 +13,13 @@ import { pb } from 'src/pb';
 export class ApiService {
   onOpen$: NextObserver<Event> = {
     next: () => {
-      console.log('连接开启');
+      console.log('onOpen');
       this.send({ type: pb.Type.config });
     },
   };
   onClose$: NextObserver<CloseEvent> = {
     next: () => {
-      console.log('连接关闭');
+      console.log('onClose');
     },
   };
   onStop$ = new EventEmitter<void>();

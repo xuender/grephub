@@ -108,7 +108,7 @@
           </ion-card-content>
 
           <ion-button fill="clear" (click)="menu.open()">Menu</ion-button>
-          <ion-button fill="clear" id="about">About</ion-button>
+          <ion-button fill="clear" id="about-btn">About</ion-button>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -134,7 +134,7 @@
   </ng-template>
 </ion-modal>
 
-<ion-modal trigger="about" #aboutModal>
+<ion-modal trigger="about-btn" #aboutModal>
   <ng-template>
     <ion-header [translucent]="true">
       <ion-toolbar>

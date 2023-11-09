@@ -10,7 +10,6 @@ import {
 import escape from 'escape-html';
 import { addIcons } from 'ionicons';
 import { open } from 'ionicons/icons';
-import { CarbonModule } from 'kcarbon';
 
 import { pb } from 'src/pb';
 import { ApiService } from '../api/api.service';
@@ -27,7 +26,6 @@ import { ApiService } from '../api/api.service';
     IonItemDivider,
     IonBadge,
     CommonModule,
-    CarbonModule,
   ],
 })
 export class AckComponent {
@@ -38,7 +36,6 @@ export class AckComponent {
   }
 
   open(file: string | undefined | null) {
-    console.log('open', file);
     if (!file) {
       return;
     }

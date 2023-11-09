@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   IonBadge,
   IonButton,
@@ -39,7 +40,6 @@ import {
   trash,
 } from 'ionicons/icons';
 
-import { FormsModule } from '@angular/forms';
 import { AckComponent } from '../ack/ack.component';
 import { ApiService } from '../api/api.service';
 import { TypesComponent } from '../types/types.component';
@@ -106,7 +106,6 @@ export class HomePage implements OnInit {
   }
 
   async onClose() {
-    console.log('close');
     await sleep(500);
     await this.search.setFocus();
   }

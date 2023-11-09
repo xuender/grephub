@@ -1,6 +1,6 @@
 {
   "name": "agp",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "author": "xuender",
   "homepage": "https://github.com/xuender/agp",
   "scripts": {
@@ -29,7 +29,6 @@
     "@ionic/angular": "^7.5.0",
     "escape-html": "^1.0.3",
     "ionicons": "^7.2.1",
-    "kcarbon": "^0.0.18",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
