@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xuender/ag-ui/app"
+	"github.com/xuender/agp/app"
 	"github.com/xuender/gca"
 )
 
@@ -20,7 +20,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "ag-ui\n\n")
+	fmt.Fprintf(os.Stderr, "agp\n\n")
 	fmt.Fprintf(os.Stderr, "agui.\n\n")
 	fmt.Fprintf(os.Stderr, "Usage: %s [flags]\n", os.Args[0])
 	flag.PrintDefaults()

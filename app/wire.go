@@ -5,8 +5,8 @@ package app
 
 import (
 	"github.com/google/wire"
-	"github.com/xuender/ag-ui/ag"
-	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/agp/ag"
+	"github.com/xuender/agp/pb"
 	"github.com/xuender/gca"
 )
 

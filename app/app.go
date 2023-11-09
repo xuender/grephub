@@ -3,8 +3,8 @@ package app
 import (
 	"embed"
 
-	"github.com/xuender/ag-ui/ag"
-	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/agp/ag"
+	"github.com/xuender/agp/pb"
 	"github.com/xuender/gca"
 )
 

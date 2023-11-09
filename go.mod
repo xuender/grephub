@@ -1,4 +1,4 @@
-module github.com/xuender/ag-ui
+module github.com/xuender/agp
 
 go 1.21
 
@@ -15,7 +15,7 @@ require (
 	github.com/samber/lo v1.38.1
 	github.com/stretchr/testify v1.8.4
 	github.com/xuender/gca v0.0.7
-	github.com/xuender/kit v1.0.40
+	github.com/xuender/kit v1.0.41
 	google.golang.org/protobuf v1.31.0
 
 )

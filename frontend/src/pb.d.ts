@@ -433,17 +433,11 @@ export namespace pb {
         /** Msg ack */
         ack?: (pb.IAck|null);
 
-        /** Msg open */
-        open?: (string|null);
-
-        /** Msg select */
-        select?: (string|null);
+        /** Msg value */
+        value?: (string|null);
 
         /** Msg dirs */
         dirs?: (string[]|null);
-
-        /** Msg alert */
-        alert?: (string|null);
     }
 
     /** Represents a Msg. */
@@ -464,17 +458,11 @@ export namespace pb {
         /** Msg ack. */
         public ack?: (pb.IAck|null);
 
-        /** Msg open. */
-        public open: string;
-
-        /** Msg select. */
-        public select: string;
+        /** Msg value. */
+        public value: string;
 
         /** Msg dirs. */
         public dirs: string[];
-
-        /** Msg alert. */
-        public alert: string;
 
         /**
          * Creates a new Msg instance using the specified properties.
@@ -562,7 +550,8 @@ export namespace pb {
         open = 3,
         select = 4,
         stop = 5,
-        alert = 6
+        alert = 6,
+        delDir = 7
     }
 
     /** Properties of a Query. */

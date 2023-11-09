@@ -1,0 +1,26 @@
+ion-input.pattern {
+  --color: red;
+}
+
+ion-input.file {
+  --color: darkgreen;
+}
+
+ion-input.count {
+  --color: blue;
+}
+
+.about {
+  font-size: 1.6em;
+}
+
+ion-list-header{
+  ion-label {
+    font-weight: bold;
+    font-size: 1.3em;
+  }
+}
+
+ion-title, ion-card-title {
+  font-weight: bold;
+}

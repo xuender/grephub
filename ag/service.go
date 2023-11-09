@@ -6,13 +6,14 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
+	"slices"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 	"github.com/samber/lo"
-	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/agp/pb"
 	"github.com/xuender/kit/los"
 	"github.com/xuender/kit/oss"
 	"github.com/xuender/kit/types"
@@ -28,6 +29,7 @@ type Service struct {
 	cfg    *pb.Config
 	cancel context.CancelFunc
 	funcs  map[pb.Type]WsFunc
+	pro    *oss.ProcInfo
 }
 
 func NewService(
@@ -40,19 +42,31 @@ func NewService(
 	serv := &Service{
 		funcs: make(map[pb.Type]WsFunc),
 		cfg:   cfg,
+		pro:   oss.NewProcInfo(),
 	}
 
 	serv.funcs[pb.Type_config] = serv.config
 	serv.funcs[pb.Type_query] = serv.query
-	serv.funcs[pb.Type_ack] = serv.ack
+	serv.funcs[pb.Type_ack] = serv.ignore
 	serv.funcs[pb.Type_open] = serv.open
 	serv.funcs[pb.Type_select] = serv.selected
 	serv.funcs[pb.Type_stop] = serv.stop
+	serv.funcs[pb.Type_delDir] = serv.delDir
 
 	return serv
 }
 
-func (p *Service) ack(_ *pb.Msg, _ *websocket.Conn) {}
+func (p *Service) ignore(_ *pb.Msg, _ *websocket.Conn) {}
+func (p *Service) delDir(msg *pb.Msg, conn *websocket.Conn) {
+	idx := slices.Index(p.cfg.GetDirs(), msg.GetValue())
+	if idx < 0 {
+		return
+	}
+
+	p.cfg.Dirs = slices.Delete(p.cfg.GetDirs(), idx, idx+1)
+
+	p.config(&pb.Msg{}, conn)
+}
 
 func (p *Service) stop(msg *pb.Msg, conn *websocket.Conn) {
 	if p.cancel != nil {
@@ -73,6 +87,7 @@ func (p *Service) config(msg *pb.Msg, conn *websocket.Conn) {
 
 	msg.Dirs = p.cfg.GetDirs()
 	msg.Query = p.cfg.GetQuery()
+	msg.Value = p.pro.String()
 	msg.Type = pb.Type_config
 
 	los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(msg))))
@@ -115,27 +130,25 @@ func (p *Service) query(msg *pb.Msg, conn *websocket.Conn) {
 }
 
 func (p *Service) selected(msg *pb.Msg, conn *websocket.Conn) {
-	dir, err := zenity.SelectFile(
+	dirs, err := zenity.SelectFileMultiple(
 		zenity.Filename("."),
 		zenity.Directory())
-	if err != nil {
+	if err != nil || len(dirs) == 0 {
 		slog.Error("selected", "err", err)
 
 		return
 	}
 
-	p.cfg.Dirs = append(p.cfg.GetDirs(), dir)
+	p.cfg.Dirs = append(p.cfg.GetDirs(), dirs...)
 
 	p.config(msg, conn)
 }
 
 func (p *Service) open(msg *pb.Msg, _ *websocket.Conn) {
-	slog.Info("say", "open", msg.GetOpen())
-	los.Must0(browser.OpenFile(msg.GetOpen()))
+	los.Must0(browser.OpenFile(msg.GetValue()))
 }
 
 func (p *Service) Say(msg *pb.Msg, conn *websocket.Conn) {
-	slog.Info("say", "msg", msg)
 	p.funcs[msg.GetType()](msg, conn)
 }
 
@@ -170,8 +183,6 @@ func (p *Service) AsyncAg(acks chan<- *pb.Ack, pattern string, params ...string)
 	for {
 		line, _, err := reader.ReadLine()
 		if err != nil {
-			slog.Error("ag", "err", err)
-
 			break
 		}
 

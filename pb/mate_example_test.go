@@ -3,7 +3,7 @@ package pb_test
 import (
 	"fmt"
 
-	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/agp/pb"
 )
 
 func ExampleNewMate() {

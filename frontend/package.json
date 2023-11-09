@@ -1,13 +1,13 @@
 {
-  "name": "agui",
+  "name": "agp",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "xuender",
+  "homepage": "https://github.com/xuender/agp",
   "scripts": {
     "ng": "ng",
     "start": "ionic serve -- --proxy-config proxy.conf.json",
     "build": "ng build --base-href ./",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --watch --proxy-config proxy.conf.json --configuration development",
     "test": "ng test",
     "lint": "ng lint"
   },

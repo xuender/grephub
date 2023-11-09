@@ -1022,10 +1022,8 @@ $root.pb = (function() {
          * @property {pb.Type|null} [type] Msg type
          * @property {pb.IQuery|null} [query] Msg query
          * @property {pb.IAck|null} [ack] Msg ack
-         * @property {string|null} [open] Msg open
-         * @property {string|null} [select] Msg select
+         * @property {string|null} [value] Msg value
          * @property {Array.<string>|null} [dirs] Msg dirs
-         * @property {string|null} [alert] Msg alert
          */
 
         /**
@@ -1069,20 +1067,12 @@ $root.pb = (function() {
         Msg.prototype.ack = null;
 
         /**
-         * Msg open.
-         * @member {string} open
+         * Msg value.
+         * @member {string} value
          * @memberof pb.Msg
          * @instance
          */
-        Msg.prototype.open = "";
-
-        /**
-         * Msg select.
-         * @member {string} select
-         * @memberof pb.Msg
-         * @instance
-         */
-        Msg.prototype.select = "";
+        Msg.prototype.value = "";
 
         /**
          * Msg dirs.
@@ -1091,14 +1081,6 @@ $root.pb = (function() {
          * @instance
          */
         Msg.prototype.dirs = $util.emptyArray;
-
-        /**
-         * Msg alert.
-         * @member {string} alert
-         * @memberof pb.Msg
-         * @instance
-         */
-        Msg.prototype.alert = "";
 
         /**
          * Creates a new Msg instance using the specified properties.
@@ -1130,15 +1112,11 @@ $root.pb = (function() {
                 $root.pb.Query.encode(message.query, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.ack != null && Object.hasOwnProperty.call(message, "ack"))
                 $root.pb.Ack.encode(message.ack, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-            if (message.open != null && Object.hasOwnProperty.call(message, "open"))
-                writer.uint32(/* id 4, wireType 2 =*/34).string(message.open);
-            if (message.select != null && Object.hasOwnProperty.call(message, "select"))
-                writer.uint32(/* id 5, wireType 2 =*/42).string(message.select);
+            if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.value);
             if (message.dirs != null && message.dirs.length)
                 for (var i = 0; i < message.dirs.length; ++i)
-                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.dirs[i]);
-            if (message.alert != null && Object.hasOwnProperty.call(message, "alert"))
-                writer.uint32(/* id 7, wireType 2 =*/58).string(message.alert);
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.dirs[i]);
             return writer;
         };
 
@@ -1186,21 +1164,13 @@ $root.pb = (function() {
                         break;
                     }
                 case 4: {
-                        message.open = reader.string();
+                        message.value = reader.string();
                         break;
                     }
                 case 5: {
-                        message.select = reader.string();
-                        break;
-                    }
-                case 6: {
                         if (!(message.dirs && message.dirs.length))
                             message.dirs = [];
                         message.dirs.push(reader.string());
-                        break;
-                    }
-                case 7: {
-                        message.alert = reader.string();
                         break;
                     }
                 default:
@@ -1249,6 +1219,7 @@ $root.pb = (function() {
                 case 4:
                 case 5:
                 case 6:
+                case 7:
                     break;
                 }
             if (message.query != null && message.hasOwnProperty("query")) {
@@ -1261,12 +1232,9 @@ $root.pb = (function() {
                 if (error)
                     return "ack." + error;
             }
-            if (message.open != null && message.hasOwnProperty("open"))
-                if (!$util.isString(message.open))
-                    return "open: string expected";
-            if (message.select != null && message.hasOwnProperty("select"))
-                if (!$util.isString(message.select))
-                    return "select: string expected";
+            if (message.value != null && message.hasOwnProperty("value"))
+                if (!$util.isString(message.value))
+                    return "value: string expected";
             if (message.dirs != null && message.hasOwnProperty("dirs")) {
                 if (!Array.isArray(message.dirs))
                     return "dirs: array expected";
@@ -1274,9 +1242,6 @@ $root.pb = (function() {
                     if (!$util.isString(message.dirs[i]))
                         return "dirs: string[] expected";
             }
-            if (message.alert != null && message.hasOwnProperty("alert"))
-                if (!$util.isString(message.alert))
-                    return "alert: string expected";
             return null;
         };
 
@@ -1327,6 +1292,10 @@ $root.pb = (function() {
             case 6:
                 message.type = 6;
                 break;
+            case "delDir":
+            case 7:
+                message.type = 7;
+                break;
             }
             if (object.query != null) {
                 if (typeof object.query !== "object")
@@ -1338,10 +1307,8 @@ $root.pb = (function() {
                     throw TypeError(".pb.Msg.ack: object expected");
                 message.ack = $root.pb.Ack.fromObject(object.ack);
             }
-            if (object.open != null)
-                message.open = String(object.open);
-            if (object.select != null)
-                message.select = String(object.select);
+            if (object.value != null)
+                message.value = String(object.value);
             if (object.dirs) {
                 if (!Array.isArray(object.dirs))
                     throw TypeError(".pb.Msg.dirs: array expected");
@@ -1349,8 +1316,6 @@ $root.pb = (function() {
                 for (var i = 0; i < object.dirs.length; ++i)
                     message.dirs[i] = String(object.dirs[i]);
             }
-            if (object.alert != null)
-                message.alert = String(object.alert);
             return message;
         };
 
@@ -1373,9 +1338,7 @@ $root.pb = (function() {
                 object.type = options.enums === String ? "config" : 0;
                 object.query = null;
                 object.ack = null;
-                object.open = "";
-                object.select = "";
-                object.alert = "";
+                object.value = "";
             }
             if (message.type != null && message.hasOwnProperty("type"))
                 object.type = options.enums === String ? $root.pb.Type[message.type] === undefined ? message.type : $root.pb.Type[message.type] : message.type;
@@ -1383,17 +1346,13 @@ $root.pb = (function() {
                 object.query = $root.pb.Query.toObject(message.query, options);
             if (message.ack != null && message.hasOwnProperty("ack"))
                 object.ack = $root.pb.Ack.toObject(message.ack, options);
-            if (message.open != null && message.hasOwnProperty("open"))
-                object.open = message.open;
-            if (message.select != null && message.hasOwnProperty("select"))
-                object.select = message.select;
+            if (message.value != null && message.hasOwnProperty("value"))
+                object.value = message.value;
             if (message.dirs && message.dirs.length) {
                 object.dirs = [];
                 for (var j = 0; j < message.dirs.length; ++j)
                     object.dirs[j] = message.dirs[j];
             }
-            if (message.alert != null && message.hasOwnProperty("alert"))
-                object.alert = message.alert;
             return object;
         };
 
@@ -1437,6 +1396,7 @@ $root.pb = (function() {
      * @property {number} select=4 select value
      * @property {number} stop=5 stop value
      * @property {number} alert=6 alert value
+     * @property {number} delDir=7 delDir value
      */
     pb.Type = (function() {
         var valuesById = {}, values = Object.create(valuesById);
@@ -1447,6 +1407,7 @@ $root.pb = (function() {
         values[valuesById[4] = "select"] = 4;
         values[valuesById[5] = "stop"] = 5;
         values[valuesById[6] = "alert"] = 6;
+        values[valuesById[7] = "delDir"] = 7;
         return values;
     })();
 

@@ -7,7 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/gorilla/websocket"
-	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/agp/pb"
 	"github.com/xuender/kit/los"
 	"google.golang.org/protobuf/proto"
 )
@@ -52,15 +52,15 @@ exit:
 	for _, release := range _releases {
 		for _, ver := range release[1:] {
 			if bytes.Contains(out, []byte(ver)) {
-				msg.Alert = release[0]
+				msg.Value = release[0]
 
 				break exit
 			}
 		}
 	}
 
-	if msg.Alert == "" {
-		msg.Alert = _releases[0][0]
+	if msg.GetValue() == "" {
+		msg.Value = _releases[0][0]
 	}
 
 	los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(msg))))

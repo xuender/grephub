@@ -17,23 +17,35 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonListHeader,
   IonMenu,
   IonMenuButton,
   IonModal,
   IonProgressBar,
   IonRow,
   IonSearchbar,
+  IonText,
   IonTitle,
   IonToggle,
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addCircle, cog, searchCircle } from 'ionicons/icons';
+import {
+  addCircle,
+  closeCircle,
+  cog,
+  searchCircle,
+  toggle,
+  trash,
+} from 'ionicons/icons';
 
 import { FormsModule } from '@angular/forms';
 import { AckComponent } from '../ack/ack.component';
 import { ApiService } from '../api/api.service';
 import { TypesComponent } from '../types/types.component';
+
+const sleep = (msec: number) =>
+  new Promise<void>((resolve) => setTimeout(() => resolve(), msec));
 
 @Component({
   selector: 'app-home',
@@ -68,21 +80,35 @@ import { TypesComponent } from '../types/types.component';
     IonCardTitle,
     IonCol,
     IonRow,
+    IonText,
     IonCardContent,
+    IonListHeader,
     TypesComponent,
   ],
 })
 export class HomePage implements OnInit {
-  @ViewChild('modal', { static: true }) modal!: IonModal;
-  @ViewChild('menu', { static: true }) menu!: IonMenu;
+  @ViewChild('modal', { static: true })
+  modal!: IonModal;
+  @ViewChild('menu', { static: true })
+  menu!: IonMenu;
+  @ViewChild('search', { static: true })
+  search!: IonSearchbar;
+  isDel = false;
   constructor(public api: ApiService) {
-    addIcons({ cog, searchCircle, addCircle });
+    addIcons({ cog, searchCircle, addCircle, trash, toggle, closeCircle });
+    this.api.onStop$.subscribe((_) => this.onClose());
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.menu) {
       this.menu.open();
     }
+  }
+
+  async onClose() {
+    console.log('close');
+    await sleep(500);
+    await this.search.setFocus();
   }
 
   selectionChanged(types: string[]) {

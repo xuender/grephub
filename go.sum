@@ -47,8 +47,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/xuender/gca v0.0.7 h1:JqbLoR+k2SBIk+V9B1pEezv1YWrgE+BAzqnDS6fFgb4=
 github.com/xuender/gca v0.0.7/go.mod h1:ZTl489NHRLHMIz4niLh3AlXzBZMOyg4BdT88VaZayEs=
-github.com/xuender/kit v1.0.40 h1:mj0b1QlgY2GY8fB6sDGX20Aqdn5ELlPdIHSABdYDwO8=
-github.com/xuender/kit v1.0.40/go.mod h1:Eh+cNelAMF4kdqorsWLLt9TmmqSo1vBjEoiMsj3Tp/8=
+github.com/xuender/kit v1.0.41 h1:9VxTk15ZhEp+mrRbw4w/n5W69PnoTG7B7O8lTRNV7Yw=
+github.com/xuender/kit v1.0.41/go.mod h1:Eh+cNelAMF4kdqorsWLLt9TmmqSo1vBjEoiMsj3Tp/8=
 go.uber.org/goleak v1.2.1 h1:NBol2c7O1ZokfZ0LEU9K6Whx/KnwvepVetCUhtKja4A=
 go.uber.org/goleak v1.2.1/go.mod h1:qlT2yGI9QafXHhZZLxlSuNsMw3FFLxBr+tBRlmO1xH4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/xuender/ag-ui/pb"
+	"github.com/xuender/agp/pb"
 )
 
 func TestNewAcks(t *testing.T) {

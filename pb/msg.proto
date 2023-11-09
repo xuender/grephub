@@ -9,10 +9,8 @@ message Msg {
 	Type type = 1;
 	Query query = 2;
 	Ack ack = 3;
-	string open = 4;
-	string select = 5;
-	repeated string dirs = 6;
-	string alert = 7;
+	string value = 4;
+	repeated string dirs = 5;
 }
 
 enum Type {
@@ -23,4 +21,5 @@ enum Type {
 	select = 4;
 	stop = 5;
 	alert = 6;
+	delDir = 7;
 }

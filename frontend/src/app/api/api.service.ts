@@ -1,13 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import {
-  AlertController,
-  ToastController,
-  ToastOptions,
-} from '@ionic/angular/standalone';
+import { EventEmitter, Injectable } from '@angular/core';
+import { AlertController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircle } from 'ionicons/icons';
-import { NextObserver, map, share } from 'rxjs';
+import { NextObserver, Observable, Observer, map, share } from 'rxjs';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 
 import { pb } from 'src/pb';
@@ -27,6 +22,7 @@ export class ApiService {
       console.log('连接关闭');
     },
   };
+  onStop$ = new EventEmitter<void>();
   private ws: WebSocketSubject<ArrayBuffer> = webSocket({
     url: `ws://${location.host}/ws`,
     openObserver: this.onOpen$,
@@ -48,16 +44,16 @@ export class ApiService {
     [pb.Type.config, this.onConfig],
     [pb.Type.query, this.onQuery],
     [pb.Type.ack, this.onAck],
-    [pb.Type.open, this.onOpen],
-    [pb.Type.select, this.onSelect],
+    [pb.Type.open, this.onIgnore],
+    [pb.Type.select, this.onIgnore],
     [pb.Type.stop, this.onStop],
   ]);
   dirs: string[] = [];
   isRun = false;
   query: pb.IQuery = { maxCount: 1, pattern: '', types: [] };
   acks: pb.IAck[] = [];
+  pro = '';
   constructor(
-    private http: HttpClient,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController
   ) {
@@ -105,8 +101,17 @@ export class ApiService {
     this.query.paths.push(dir);
   }
 
+  async delDir(dir: string) {
+    this.send({ type: pb.Type.delDir, value: dir });
+    const toast = await this.toastCtrl.create({
+      message: `config remove ${dir}.`,
+      duration: 1000,
+    });
+    await toast.present();
+  }
+
   private async onAlert(msg: pb.IMsg) {
-    if (!msg.alert) {
+    if (!msg.value) {
       return;
     }
 
@@ -116,7 +121,7 @@ export class ApiService {
       inputs: [
         {
           type: 'text',
-          value: msg.alert,
+          value: msg.value,
         },
       ],
       buttons: ['OK'],
@@ -132,6 +137,21 @@ export class ApiService {
 
     if (msg.query) {
       this.query = msg.query;
+    }
+
+    if (msg.value) {
+      const list: string[] = [];
+
+      for (const kv of msg.value.split('\n')) {
+        if (!kv) {
+          continue;
+        }
+
+        const val = kv.split(': ');
+        list.push(`<tr><th>${val[0]}</th><td>${val[1]}</td></tr>`);
+      }
+
+      this.pro = `<table>${list.join('\n')}</table>`;
     }
   }
 
@@ -152,25 +172,12 @@ export class ApiService {
     this.acks.push(msg.ack);
   }
 
-  private onOpen(msg: pb.IMsg) {
-    console.log('open', msg);
-  }
-
-  private onSelect(msg: pb.IMsg) {
-    if (!msg.select) {
-      return;
-    }
-
-    if (!this.dirs) {
-      this.dirs = [];
-    }
-
-    this.dirs.push(msg.select);
-  }
+  private onIgnore(_: pb.IMsg) {}
 
   private onStop(msg: pb.IMsg) {
     console.log('stop', msg);
     this.isRun = false;
+    this.onStop$.emit();
   }
 
   doQuery() {
@@ -183,8 +190,8 @@ export class ApiService {
     this.ws.next(pb.Msg.encode(msg).finish());
   }
 
-  async doOpen(open: string) {
-    this.send({ open, type: pb.Type.open });
+  async doOpen(file: string) {
+    this.send({ value: file, type: pb.Type.open });
     const toast = await this.toastCtrl.create({
       message: `Open ${open}.`,
       duration: 1000,
@@ -194,23 +201,5 @@ export class ApiService {
 
   doSelect() {
     this.send({ type: pb.Type.select });
-  }
-
-  copy(text: string) {
-    this.http.post<boolean>('/app/clipboard', text).subscribe(async (isOK) => {
-      const opts: ToastOptions = { position: 'top' };
-      if (isOK) {
-        opts.message = `[ ${text} ] 已复制。`;
-        opts.icon = 'information-circle';
-        opts.duration = 1500;
-      } else {
-        opts.message = '复制错误';
-        opts.icon = 'sad';
-        opts.buttons = [{ text: '关闭', role: 'cancel' }];
-      }
-
-      const toast = await this.toastCtrl.create(opts);
-      await toast.present();
-    });
   }
 }

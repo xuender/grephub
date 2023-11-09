@@ -2,7 +2,7 @@
 POST http://localhost:8080/api/ag
 Content-Type: application/json
 
-{"pattern":"book","path":"/home/ender/work/23/ag-ui"}
+{"pattern":"book","path":"path"}
 ### get2
 POST http://localhost:8080/api/ag
 Content-Type: application/json
