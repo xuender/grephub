@@ -45,7 +45,7 @@ export class ApiService {
     [pb.Type.query, this.onQuery],
     [pb.Type.ack, this.onAck],
     [pb.Type.open, this.onIgnore],
-    [pb.Type.select, this.onIgnore],
+    [pb.Type.addDirs, this.onIgnore],
     [pb.Type.stop, this.onStop],
   ]);
   dirs: string[] = [];
@@ -53,6 +53,7 @@ export class ApiService {
   query: pb.IQuery = { maxCount: 1, pattern: '', types: [] };
   acks: pb.IAck[] = [];
   pro = '';
+  time = '';
   constructor(
     private toastCtrl: ToastController,
     private alertCtrl: AlertController
@@ -162,6 +163,7 @@ export class ApiService {
 
     this.query = msg.query;
     this.acks = [];
+    this.time = '';
   }
 
   private onAck(msg: pb.IMsg) {
@@ -177,6 +179,7 @@ export class ApiService {
   private onStop(msg: pb.IMsg) {
     console.log('stop', msg);
     this.isRun = false;
+    this.time = msg.value ? msg.value : '';
     this.onStop$.emit();
   }
 
@@ -199,7 +202,7 @@ export class ApiService {
     await toast.present();
   }
 
-  doSelect() {
-    this.send({ type: pb.Type.select });
+  doAddDirs() {
+    this.send({ type: pb.Type.addDirs });
   }
 }

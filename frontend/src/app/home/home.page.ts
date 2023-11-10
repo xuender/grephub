@@ -25,6 +25,8 @@ import {
   IonProgressBar,
   IonRow,
   IonSearchbar,
+  IonSelect,
+  IonSelectOption,
   IonText,
   IonTitle,
   IonToggle,
@@ -40,6 +42,7 @@ import {
   trash,
 } from 'ionicons/icons';
 
+import { pb } from 'src/pb';
 import { AckComponent } from '../ack/ack.component';
 import { ApiService } from '../api/api.service';
 import { TypesComponent } from '../types/types.component';
@@ -83,6 +86,8 @@ const sleep = (msec: number) =>
     IonText,
     IonCardContent,
     IonListHeader,
+    IonSelect,
+    IonSelectOption,
     TypesComponent,
   ],
 })
@@ -94,6 +99,7 @@ export class HomePage implements OnInit {
   @ViewChild('search', { static: true })
   search!: IonSearchbar;
   isDel = false;
+  searchers = ['ripgrep', 'The Silver Searcher'];
   constructor(public api: ApiService) {
     addIcons({ cog, searchCircle, addCircle, trash, toggle, closeCircle });
     this.api.onStop$.subscribe((_) => this.onClose());

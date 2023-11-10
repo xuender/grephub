@@ -7,16 +7,22 @@
 package app
 
 import (
-	"github.com/xuender/agp/ag"
-	"github.com/xuender/agp/pb"
 	"github.com/xuender/gca"
+	"github.com/xuender/grephub/pb"
+	"github.com/xuender/grephub/search"
+	"github.com/xuender/grephub/search/ag"
+	"github.com/xuender/grephub/search/rg"
+	"github.com/xuender/kit/oss"
 )
 
 // Injectors from wire.go:
 
 func InitApp() *gca.App[*pb.Msg] {
 	config := pb.NewConfig()
-	service := ag.NewService(config)
+	procInfo := oss.NewProcInfo()
+	agAg := ag.NewAg()
+	rgRg := rg.NewRg()
+	service := search.NewService(config, procInfo, agAg, rgRg)
 	app := NewApp(service)
 	return app
 }

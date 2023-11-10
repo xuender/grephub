@@ -9,18 +9,22 @@ ion-input.file {
 ion-input.count {
   --color: blue;
 }
+ion-input.time {
+  --color: purple;
+}
 
 .about {
   font-size: 1.6em;
 }
 
-ion-list-header{
+ion-list-header {
   ion-label {
     font-weight: bold;
     font-size: 1.3em;
   }
 }
 
-ion-title, ion-card-title {
+ion-title,
+ion-card-title {
   font-weight: bold;
 }

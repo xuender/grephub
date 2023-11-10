@@ -5,6 +5,12 @@ option go_package = "./pb";
 message Query {
 	string pattern = 1;
 	uint32 maxCount = 2;
-	repeated string paths = 3;
-	repeated string types = 4;
+	Searcher searcher = 3;
+	repeated string paths = 4;
+	repeated string types = 5;
+}
+
+enum Searcher {
+	rg = 0;
+	ag = 1;
 }

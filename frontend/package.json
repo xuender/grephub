@@ -1,8 +1,8 @@
 {
-  "name": "agp",
+  "name": "grephub",
   "version": "0.0.3",
   "author": "xuender",
-  "homepage": "https://github.com/xuender/agp",
+  "homepage": "https://github.com/xuender/grephub",
   "scripts": {
     "ng": "ng",
     "start": "ionic serve -- --proxy-config proxy.conf.json",

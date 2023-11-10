@@ -548,9 +548,9 @@ export namespace pb {
         query = 1,
         ack = 2,
         open = 3,
-        select = 4,
-        stop = 5,
-        alert = 6,
+        stop = 4,
+        alert = 5,
+        addDirs = 6,
         delDir = 7
     }
 
@@ -562,6 +562,9 @@ export namespace pb {
 
         /** Query maxCount */
         maxCount?: (number|null);
+
+        /** Query searcher */
+        searcher?: (pb.Searcher|null);
 
         /** Query paths */
         paths?: (string[]|null);
@@ -584,6 +587,9 @@ export namespace pb {
 
         /** Query maxCount. */
         public maxCount: number;
+
+        /** Query searcher. */
+        public searcher: pb.Searcher;
 
         /** Query paths. */
         public paths: string[];
@@ -667,6 +673,12 @@ export namespace pb {
          * @returns The default type url
          */
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Searcher enum. */
+    enum Searcher {
+        rg = 0,
+        ag = 1
     }
 
     /** Properties of a Result. */

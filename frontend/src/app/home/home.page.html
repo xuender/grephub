@@ -2,7 +2,7 @@
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-button color="primary" (click)="api.doSelect()">
+        <ion-button color="primary" (click)="api.doAddDirs()">
           <ion-icon name="add-circle" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-buttons>
@@ -41,6 +41,12 @@
       <ion-list-header>
         <ion-label>Options</ion-label>
       </ion-list-header>
+      <ion-item>
+        <ion-select label="Searcher" [(ngModel)]="api.query.searcher" (ngModelChange)="api.query.types=[]">
+          <ion-select-option *ngFor="let searcher of searchers;index as i" [value]="i">{{ searcher
+            }}</ion-select-option>
+        </ion-select>
+      </ion-item>
       <ion-item [button]="true" [detail]="false" id="select-type">
         <ion-label>Types</ion-label>
         <div slot="end" id="selected-type">{{ api.query.types }}</div>
@@ -62,7 +68,7 @@
         enterkeyhint="search" (keyup.enter)="api.doQuery()" #search></ion-searchbar>
       <ion-progress-bar *ngIf="api.isRun" type="indeterminate"></ion-progress-bar>
       <ion-title>
-        The Silver Searcher plus
+        Grep Hub
       </ion-title>
       <ion-buttons slot="end">
         <ion-button color="primary" [disabled]="api.isRun" (click)="api.doQuery()">
@@ -76,7 +82,7 @@
     <ion-header collapse="condense">
       <ion-toolbar>
         <ion-title size="large">
-          The Silver Searcher plus
+          Grep Hub
         </ion-title>
       </ion-toolbar>
     </ion-header>
@@ -84,7 +90,7 @@
       <ion-col size="12" size-lg="6" offset-lg="3">
         <ion-card *ngIf="!api.acks.length">
           <ion-card-header>
-            <ion-card-title>The Silver Searcher plus</ion-card-title>
+            <ion-card-title>Grep Hub</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <p>
@@ -120,17 +126,18 @@
 
   <ion-footer>
     <ion-item>
-      <ion-input label="Pattern" [value]="api.query.pattern" class="pattern" readonly="true"></ion-input>
+      <ion-input label="Pattern" [value]="api.query.pattern" class="pattern" readonly="true" type="text"></ion-input>
       <ion-input label="File" [value]="api.acks.length" class="file" readonly="true" type="number"></ion-input>
       <ion-input label="Count" [value]="api.count()" class="count" readonly="true" type="number"></ion-input>
+      <ion-input label="Time" [value]="api.time" class="time" readonly="true" type="text"></ion-input>
     </ion-item>
   </ion-footer>
 </div>
 
 <ion-modal trigger="select-type" #modal>
   <ng-template>
-    <app-types class="ion-page" [selected]="api.query.types" (selectionChange)="selectionChanged($event)"
-      (selectionCancel)="modal.dismiss()"></app-types>
+    <app-types class="ion-page" [selected]="api.query.types" [searcher]="api.query.searcher"
+      (selectionChange)="selectionChanged($event)" (selectionCancel)="modal.dismiss()"></app-types>
   </ng-template>
 </ion-modal>
 

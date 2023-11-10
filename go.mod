@@ -1,4 +1,4 @@
-module github.com/xuender/agp
+module github.com/xuender/grephub
 
 go 1.21
 

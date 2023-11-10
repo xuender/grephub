@@ -1280,15 +1280,15 @@ $root.pb = (function() {
             case 3:
                 message.type = 3;
                 break;
-            case "select":
+            case "stop":
             case 4:
                 message.type = 4;
                 break;
-            case "stop":
+            case "alert":
             case 5:
                 message.type = 5;
                 break;
-            case "alert":
+            case "addDirs":
             case 6:
                 message.type = 6;
                 break;
@@ -1393,9 +1393,9 @@ $root.pb = (function() {
      * @property {number} query=1 query value
      * @property {number} ack=2 ack value
      * @property {number} open=3 open value
-     * @property {number} select=4 select value
-     * @property {number} stop=5 stop value
-     * @property {number} alert=6 alert value
+     * @property {number} stop=4 stop value
+     * @property {number} alert=5 alert value
+     * @property {number} addDirs=6 addDirs value
      * @property {number} delDir=7 delDir value
      */
     pb.Type = (function() {
@@ -1404,9 +1404,9 @@ $root.pb = (function() {
         values[valuesById[1] = "query"] = 1;
         values[valuesById[2] = "ack"] = 2;
         values[valuesById[3] = "open"] = 3;
-        values[valuesById[4] = "select"] = 4;
-        values[valuesById[5] = "stop"] = 5;
-        values[valuesById[6] = "alert"] = 6;
+        values[valuesById[4] = "stop"] = 4;
+        values[valuesById[5] = "alert"] = 5;
+        values[valuesById[6] = "addDirs"] = 6;
         values[valuesById[7] = "delDir"] = 7;
         return values;
     })();
@@ -1419,6 +1419,7 @@ $root.pb = (function() {
          * @interface IQuery
          * @property {string|null} [pattern] Query pattern
          * @property {number|null} [maxCount] Query maxCount
+         * @property {pb.Searcher|null} [searcher] Query searcher
          * @property {Array.<string>|null} [paths] Query paths
          * @property {Array.<string>|null} [types] Query types
          */
@@ -1455,6 +1456,14 @@ $root.pb = (function() {
          * @instance
          */
         Query.prototype.maxCount = 0;
+
+        /**
+         * Query searcher.
+         * @member {pb.Searcher} searcher
+         * @memberof pb.Query
+         * @instance
+         */
+        Query.prototype.searcher = 0;
 
         /**
          * Query paths.
@@ -1500,12 +1509,14 @@ $root.pb = (function() {
                 writer.uint32(/* id 1, wireType 2 =*/10).string(message.pattern);
             if (message.maxCount != null && Object.hasOwnProperty.call(message, "maxCount"))
                 writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.maxCount);
+            if (message.searcher != null && Object.hasOwnProperty.call(message, "searcher"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.searcher);
             if (message.paths != null && message.paths.length)
                 for (var i = 0; i < message.paths.length; ++i)
-                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.paths[i]);
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.paths[i]);
             if (message.types != null && message.types.length)
                 for (var i = 0; i < message.types.length; ++i)
-                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.types[i]);
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.types[i]);
             return writer;
         };
 
@@ -1549,12 +1560,16 @@ $root.pb = (function() {
                         break;
                     }
                 case 3: {
+                        message.searcher = reader.int32();
+                        break;
+                    }
+                case 4: {
                         if (!(message.paths && message.paths.length))
                             message.paths = [];
                         message.paths.push(reader.string());
                         break;
                     }
-                case 4: {
+                case 5: {
                         if (!(message.types && message.types.length))
                             message.types = [];
                         message.types.push(reader.string());
@@ -1601,6 +1616,14 @@ $root.pb = (function() {
             if (message.maxCount != null && message.hasOwnProperty("maxCount"))
                 if (!$util.isInteger(message.maxCount))
                     return "maxCount: integer expected";
+            if (message.searcher != null && message.hasOwnProperty("searcher"))
+                switch (message.searcher) {
+                default:
+                    return "searcher: enum value expected";
+                case 0:
+                case 1:
+                    break;
+                }
             if (message.paths != null && message.hasOwnProperty("paths")) {
                 if (!Array.isArray(message.paths))
                     return "paths: array expected";
@@ -1634,6 +1657,22 @@ $root.pb = (function() {
                 message.pattern = String(object.pattern);
             if (object.maxCount != null)
                 message.maxCount = object.maxCount >>> 0;
+            switch (object.searcher) {
+            default:
+                if (typeof object.searcher === "number") {
+                    message.searcher = object.searcher;
+                    break;
+                }
+                break;
+            case "rg":
+            case 0:
+                message.searcher = 0;
+                break;
+            case "ag":
+            case 1:
+                message.searcher = 1;
+                break;
+            }
             if (object.paths) {
                 if (!Array.isArray(object.paths))
                     throw TypeError(".pb.Query.paths: array expected");
@@ -1671,11 +1710,14 @@ $root.pb = (function() {
             if (options.defaults) {
                 object.pattern = "";
                 object.maxCount = 0;
+                object.searcher = options.enums === String ? "rg" : 0;
             }
             if (message.pattern != null && message.hasOwnProperty("pattern"))
                 object.pattern = message.pattern;
             if (message.maxCount != null && message.hasOwnProperty("maxCount"))
                 object.maxCount = message.maxCount;
+            if (message.searcher != null && message.hasOwnProperty("searcher"))
+                object.searcher = options.enums === String ? $root.pb.Searcher[message.searcher] === undefined ? message.searcher : $root.pb.Searcher[message.searcher] : message.searcher;
             if (message.paths && message.paths.length) {
                 object.paths = [];
                 for (var j = 0; j < message.paths.length; ++j)
@@ -1716,6 +1758,20 @@ $root.pb = (function() {
         };
 
         return Query;
+    })();
+
+    /**
+     * Searcher enum.
+     * @name pb.Searcher
+     * @enum {number}
+     * @property {number} rg=0 rg value
+     * @property {number} ag=1 ag value
+     */
+    pb.Searcher = (function() {
+        var valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "rg"] = 0;
+        values[valuesById[1] = "ag"] = 1;
+        return values;
     })();
 
     pb.Result = (function() {

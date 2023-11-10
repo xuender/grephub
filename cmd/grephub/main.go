@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/xuender/agp/app"
 	"github.com/xuender/gca"
+	"github.com/xuender/grephub/app"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "agp\n\n")
+	fmt.Fprintf(os.Stderr, "grephub\n\n")
 	fmt.Fprintf(os.Stderr, "agui.\n\n")
 	fmt.Fprintf(os.Stderr, "Usage: %s [flags]\n", os.Args[0])
 	flag.PrintDefaults()

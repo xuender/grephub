@@ -11,11 +11,13 @@ import (
 	"github.com/xuender/kit/oss"
 )
 
+const _name = "grephub"
+
 func NewConfig() *Config {
-	dir := filepath.Join(los.Must(os.UserConfigDir()), "ag")
+	dir := filepath.Join(los.Must(os.UserConfigDir()), _name)
 	_ = os.MkdirAll(dir, oss.DefaultDirFileMod)
 
-	cfg := filepath.Join(dir, "agui.toml")
+	cfg := filepath.Join(dir, _name+".toml")
 
 	if oss.Exist(cfg) {
 		file := los.Must(os.Open(cfg))
@@ -40,10 +42,10 @@ func (p *Config) Save() {
 	dirs = lo.Union(dirs)
 	p.Dirs = lo.Filter(dirs, func(dir string, _ int) bool { return oss.Exist(dir) })
 
-	dir := filepath.Join(los.Must(os.UserConfigDir()), "ag")
+	dir := filepath.Join(los.Must(os.UserConfigDir()), _name)
 	_ = os.MkdirAll(dir, oss.DefaultDirFileMod)
 
-	file := los.Must(os.Create(filepath.Join(dir, "agui.toml")))
+	file := los.Must(os.Create(filepath.Join(dir, _name+".toml")))
 	defer file.Close()
 
 	los.Must0(toml.NewEncoder(file).Encode(p))
