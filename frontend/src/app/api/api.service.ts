@@ -2,11 +2,11 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircle } from 'ionicons/icons';
-import { NextObserver, Observable, Observer, map, share } from 'rxjs';
+import { NextObserver, map, share } from 'rxjs';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 
 import { pb } from 'src/pb';
-
+const loadSize = 100;
 @Injectable({
   providedIn: 'root',
 })
@@ -51,7 +51,8 @@ export class ApiService {
   dirs: string[] = [];
   isRun = false;
   query: pb.IQuery = { maxCount: 1, pattern: '', types: [] };
-  acks: pb.IAck[] = [];
+  private _acks: pb.IAck[] = [];
+  private size = loadSize;
   pro = '';
   time = '';
   constructor(
@@ -67,6 +68,24 @@ export class ApiService {
     });
   }
 
+  length() {
+    return this._acks.length;
+  }
+
+  load() {
+    this.size += loadSize;
+
+    return this.size > this._acks.length;
+  }
+
+  get acks(): pb.IAck[] {
+    if (this.size < this._acks.length) {
+      return this._acks.slice(0, this.size);
+    }
+
+    return this._acks;
+  }
+
   hasDir(dir: string) {
     if (!this.query.paths) {
       return false;
@@ -77,7 +96,7 @@ export class ApiService {
 
   count() {
     let count = 0;
-    for (const ack of this.acks) {
+    for (const ack of this._acks) {
       if (ack.mates) {
         count += ack.mates.length;
       }
@@ -162,8 +181,9 @@ export class ApiService {
     }
 
     this.query = msg.query;
-    this.acks = [];
+    this._acks = [];
     this.time = '';
+    this.size = loadSize;
   }
 
   private onAck(msg: pb.IMsg) {
@@ -171,7 +191,7 @@ export class ApiService {
       return;
     }
 
-    this.acks.push(...msg.ack);
+    this._acks.push(...msg.ack);
   }
 
   private onIgnore(_: pb.IMsg) {}

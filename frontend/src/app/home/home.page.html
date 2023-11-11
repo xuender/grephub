@@ -122,12 +122,15 @@
     <ion-list>
       <app-ack [item]="ack" *ngFor="let ack of api.acks"></app-ack>
     </ion-list>
+    <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-content>
 
   <ion-footer>
     <ion-item>
       <ion-input label="Pattern" [value]="api.query.pattern" class="pattern" readonly="true" type="text"></ion-input>
-      <ion-input label="File" [value]="api.acks.length" class="file" readonly="true" type="number"></ion-input>
+      <ion-input label="File" [value]="api.length()" class="file" readonly="true" type="number"></ion-input>
       <ion-input label="Count" [value]="api.count()" class="count" readonly="true" type="number"></ion-input>
       <ion-input label="Time" [value]="api.time" class="time" readonly="true" type="text"></ion-input>
     </ion-item>

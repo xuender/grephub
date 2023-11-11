@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
+  InfiniteScrollCustomEvent,
   IonBadge,
   IonButton,
   IonButtons,
@@ -14,6 +15,8 @@ import {
   IonFooter,
   IonHeader,
   IonIcon,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
   IonInput,
   IonItem,
   IonLabel,
@@ -42,7 +45,6 @@ import {
   trash,
 } from 'ionicons/icons';
 
-import { pb } from 'src/pb';
 import { AckComponent } from '../ack/ack.component';
 import { ApiService } from '../api/api.service';
 import { TypesComponent } from '../types/types.component';
@@ -88,6 +90,8 @@ const sleep = (msec: number) =>
     IonListHeader,
     IonSelect,
     IonSelectOption,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
     TypesComponent,
   ],
 })
@@ -119,5 +123,13 @@ export class HomePage implements OnInit {
   selectionChanged(types: string[]) {
     this.api.query.types = types;
     this.modal.dismiss();
+  }
+
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+    if (this.api.load()) {
+      event.target.disabled = true;
+    }
+
+    event.target.complete();
   }
 }
