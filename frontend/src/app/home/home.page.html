@@ -129,10 +129,26 @@
 
   <ion-footer>
     <ion-item>
-      <ion-input label="Pattern" [value]="api.query.pattern" class="pattern" readonly="true" type="text"></ion-input>
+      <!-- <ion-input label="Pattern" [value]="api.query.pattern" class="pattern" readonly="true" type="text"></ion-input>
       <ion-input label="File" [value]="api.length()" class="file" readonly="true" type="number"></ion-input>
       <ion-input label="Count" [value]="api.count()" class="count" readonly="true" type="number"></ion-input>
-      <ion-input label="Time" [value]="api.time" class="time" readonly="true" type="text"></ion-input>
+      <ion-input label="Time" [value]="api.time" class="time" readonly="true" type="text"></ion-input> -->
+      <ion-label>
+        Pattern <ion-text color="danger">{{ api.query.pattern }}</ion-text>
+      </ion-label>
+      <ion-label>
+        File <ion-text color="secondary">
+          <app-animated-number [num]="api.length()"></app-animated-number>
+        </ion-text>
+      </ion-label>
+      <ion-label>
+        Count <ion-text color="primary">
+          <app-animated-number [num]="api.count()"></app-animated-number>
+        </ion-text>
+      </ion-label>
+      <ion-label>
+        Time <ion-text color="tertiary">{{ api.time }}</ion-text>
+      </ion-label>
     </ion-item>
   </ion-footer>
 </div>

@@ -46,6 +46,7 @@ import {
 } from 'ionicons/icons';
 
 import { AckComponent } from '../ack/ack.component';
+import { AnimatedNumberComponent } from '../animated-number/animated-number.component';
 import { ApiService } from '../api/api.service';
 import { TypesComponent } from '../types/types.component';
 
@@ -93,6 +94,7 @@ const sleep = (msec: number) =>
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     TypesComponent,
+    AnimatedNumberComponent,
   ],
 })
 export class HomePage implements OnInit {
