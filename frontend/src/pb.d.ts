@@ -430,11 +430,11 @@ export namespace pb {
         /** Msg query */
         query?: (pb.IQuery|null);
 
-        /** Msg ack */
-        ack?: (pb.IAck|null);
-
         /** Msg value */
         value?: (string|null);
+
+        /** Msg ack */
+        ack?: (pb.IAck[]|null);
 
         /** Msg dirs */
         dirs?: (string[]|null);
@@ -455,11 +455,11 @@ export namespace pb {
         /** Msg query. */
         public query?: (pb.IQuery|null);
 
-        /** Msg ack. */
-        public ack?: (pb.IAck|null);
-
         /** Msg value. */
         public value: string;
+
+        /** Msg ack. */
+        public ack: pb.IAck[];
 
         /** Msg dirs. */
         public dirs: string[];

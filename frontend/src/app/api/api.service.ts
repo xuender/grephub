@@ -171,7 +171,7 @@ export class ApiService {
       return;
     }
 
-    this.acks.push(msg.ack);
+    this.acks.push(...msg.ack);
   }
 
   private onIgnore(_: pb.IMsg) {}

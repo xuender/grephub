@@ -16,6 +16,7 @@ import (
 
 type Rg struct {
 	cmd string
+	ok  bool
 }
 
 func NewRg() *Rg {
@@ -29,7 +30,10 @@ func NewRg() *Rg {
 		}
 	}
 
-	return &Rg{cmd: cmd}
+	ret := &Rg{cmd: cmd}
+	ret.ok = ret.Find()
+
+	return ret
 }
 
 func (p *Rg) Cmd(query *pb.Query) (string, []string) {

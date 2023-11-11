@@ -1021,8 +1021,8 @@ $root.pb = (function() {
          * @interface IMsg
          * @property {pb.Type|null} [type] Msg type
          * @property {pb.IQuery|null} [query] Msg query
-         * @property {pb.IAck|null} [ack] Msg ack
          * @property {string|null} [value] Msg value
+         * @property {Array.<pb.IAck>|null} [ack] Msg ack
          * @property {Array.<string>|null} [dirs] Msg dirs
          */
 
@@ -1035,6 +1035,7 @@ $root.pb = (function() {
          * @param {pb.IMsg=} [properties] Properties to set
          */
         function Msg(properties) {
+            this.ack = [];
             this.dirs = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
@@ -1059,20 +1060,20 @@ $root.pb = (function() {
         Msg.prototype.query = null;
 
         /**
-         * Msg ack.
-         * @member {pb.IAck|null|undefined} ack
-         * @memberof pb.Msg
-         * @instance
-         */
-        Msg.prototype.ack = null;
-
-        /**
          * Msg value.
          * @member {string} value
          * @memberof pb.Msg
          * @instance
          */
         Msg.prototype.value = "";
+
+        /**
+         * Msg ack.
+         * @member {Array.<pb.IAck>} ack
+         * @memberof pb.Msg
+         * @instance
+         */
+        Msg.prototype.ack = $util.emptyArray;
 
         /**
          * Msg dirs.
@@ -1110,10 +1111,11 @@ $root.pb = (function() {
                 writer.uint32(/* id 1, wireType 0 =*/8).int32(message.type);
             if (message.query != null && Object.hasOwnProperty.call(message, "query"))
                 $root.pb.Query.encode(message.query, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-            if (message.ack != null && Object.hasOwnProperty.call(message, "ack"))
-                $root.pb.Ack.encode(message.ack, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.value != null && Object.hasOwnProperty.call(message, "value"))
-                writer.uint32(/* id 4, wireType 2 =*/34).string(message.value);
+                writer.uint32(/* id 3, wireType 2 =*/26).string(message.value);
+            if (message.ack != null && message.ack.length)
+                for (var i = 0; i < message.ack.length; ++i)
+                    $root.pb.Ack.encode(message.ack[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
             if (message.dirs != null && message.dirs.length)
                 for (var i = 0; i < message.dirs.length; ++i)
                     writer.uint32(/* id 5, wireType 2 =*/42).string(message.dirs[i]);
@@ -1160,11 +1162,13 @@ $root.pb = (function() {
                         break;
                     }
                 case 3: {
-                        message.ack = $root.pb.Ack.decode(reader, reader.uint32());
+                        message.value = reader.string();
                         break;
                     }
                 case 4: {
-                        message.value = reader.string();
+                        if (!(message.ack && message.ack.length))
+                            message.ack = [];
+                        message.ack.push($root.pb.Ack.decode(reader, reader.uint32()));
                         break;
                     }
                 case 5: {
@@ -1227,14 +1231,18 @@ $root.pb = (function() {
                 if (error)
                     return "query." + error;
             }
-            if (message.ack != null && message.hasOwnProperty("ack")) {
-                var error = $root.pb.Ack.verify(message.ack);
-                if (error)
-                    return "ack." + error;
-            }
             if (message.value != null && message.hasOwnProperty("value"))
                 if (!$util.isString(message.value))
                     return "value: string expected";
+            if (message.ack != null && message.hasOwnProperty("ack")) {
+                if (!Array.isArray(message.ack))
+                    return "ack: array expected";
+                for (var i = 0; i < message.ack.length; ++i) {
+                    var error = $root.pb.Ack.verify(message.ack[i]);
+                    if (error)
+                        return "ack." + error;
+                }
+            }
             if (message.dirs != null && message.hasOwnProperty("dirs")) {
                 if (!Array.isArray(message.dirs))
                     return "dirs: array expected";
@@ -1302,13 +1310,18 @@ $root.pb = (function() {
                     throw TypeError(".pb.Msg.query: object expected");
                 message.query = $root.pb.Query.fromObject(object.query);
             }
-            if (object.ack != null) {
-                if (typeof object.ack !== "object")
-                    throw TypeError(".pb.Msg.ack: object expected");
-                message.ack = $root.pb.Ack.fromObject(object.ack);
-            }
             if (object.value != null)
                 message.value = String(object.value);
+            if (object.ack) {
+                if (!Array.isArray(object.ack))
+                    throw TypeError(".pb.Msg.ack: array expected");
+                message.ack = [];
+                for (var i = 0; i < object.ack.length; ++i) {
+                    if (typeof object.ack[i] !== "object")
+                        throw TypeError(".pb.Msg.ack: object expected");
+                    message.ack[i] = $root.pb.Ack.fromObject(object.ack[i]);
+                }
+            }
             if (object.dirs) {
                 if (!Array.isArray(object.dirs))
                     throw TypeError(".pb.Msg.dirs: array expected");
@@ -1332,22 +1345,26 @@ $root.pb = (function() {
             if (!options)
                 options = {};
             var object = {};
-            if (options.arrays || options.defaults)
+            if (options.arrays || options.defaults) {
+                object.ack = [];
                 object.dirs = [];
+            }
             if (options.defaults) {
                 object.type = options.enums === String ? "config" : 0;
                 object.query = null;
-                object.ack = null;
                 object.value = "";
             }
             if (message.type != null && message.hasOwnProperty("type"))
                 object.type = options.enums === String ? $root.pb.Type[message.type] === undefined ? message.type : $root.pb.Type[message.type] : message.type;
             if (message.query != null && message.hasOwnProperty("query"))
                 object.query = $root.pb.Query.toObject(message.query, options);
-            if (message.ack != null && message.hasOwnProperty("ack"))
-                object.ack = $root.pb.Ack.toObject(message.ack, options);
             if (message.value != null && message.hasOwnProperty("value"))
                 object.value = message.value;
+            if (message.ack && message.ack.length) {
+                object.ack = [];
+                for (var j = 0; j < message.ack.length; ++j)
+                    object.ack[j] = $root.pb.Ack.toObject(message.ack[j], options);
+            }
             if (message.dirs && message.dirs.length) {
                 object.dirs = [];
                 for (var j = 0; j < message.dirs.length; ++j)

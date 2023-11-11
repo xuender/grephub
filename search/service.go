@@ -16,6 +16,7 @@ import (
 	"github.com/pkg/browser"
 	"github.com/xuender/grephub/pb"
 	"github.com/xuender/grephub/search/ag"
+	"github.com/xuender/grephub/search/grep"
 	"github.com/xuender/grephub/search/rg"
 	"github.com/xuender/kit/los"
 	"github.com/xuender/kit/oss"
@@ -90,6 +91,10 @@ func (p *Service) config(msg *pb.Msg, conn *websocket.Conn) {
 }
 
 func (p *Service) query(msg *pb.Msg, conn *websocket.Conn) {
+	if msg.GetQuery().GetPattern() == "" {
+		panic(grep.ErrNoPattern)
+	}
+
 	var searcher Searcher
 
 	switch msg.GetQuery().GetSearcher() {
@@ -99,17 +104,7 @@ func (p *Service) query(msg *pb.Msg, conn *websocket.Conn) {
 		searcher = p.rg
 	}
 
-	if searcher == nil {
-		los.Must0(conn.WriteMessage(
-			websocket.BinaryMessage,
-			los.Must(proto.Marshal(&pb.Msg{
-				Type:  pb.Type_alert,
-				Value: "miss searcher",
-			})),
-		))
-
-		return
-	}
+	los.Must0(searcher.Install())
 
 	if len(msg.GetQuery().GetPaths()) == 0 {
 		msg.Query.Paths = []string{los.Must(os.Getwd())}
@@ -126,9 +121,18 @@ func (p *Service) query(msg *pb.Msg, conn *websocket.Conn) {
 
 	go p.search(searcher, msg.GetQuery(), acks)
 
+	ackMsg := &pb.Msg{Type: pb.Type_ack, Ack: []*pb.Ack{}}
 	for ack := range acks {
-		msg := &pb.Msg{Ack: ack, Type: pb.Type_ack}
-		los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(msg))))
+		ackMsg.Ack = append(ackMsg.GetAck(), ack)
+		if len(ackMsg.GetAck()) >= size {
+			los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(ackMsg))))
+
+			ackMsg.Ack = []*pb.Ack{}
+		}
+	}
+
+	if len(ackMsg.GetAck()) > 0 {
+		los.Must0(conn.WriteMessage(websocket.BinaryMessage, los.Must(proto.Marshal(ackMsg))))
 	}
 
 	los.Must0(conn.WriteMessage(

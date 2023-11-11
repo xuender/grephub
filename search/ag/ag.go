@@ -15,6 +15,7 @@ import (
 
 type Ag struct {
 	cmd string
+	ok  bool
 }
 
 func NewAg() *Ag {
@@ -28,7 +29,10 @@ func NewAg() *Ag {
 		}
 	}
 
-	return &Ag{cmd: cmd}
+	ret := &Ag{cmd: cmd}
+	ret.ok = ret.Find()
+
+	return ret
 }
 
 func (p *Ag) Cmd(query *pb.Query) (string, []string) {

@@ -8,8 +8,8 @@ import "pb/ack.proto";
 message Msg {
 	Type type = 1;
 	Query query = 2;
-	Ack ack = 3;
-	string value = 4;
+	string value = 3;
+	repeated Ack ack = 4;
 	repeated string dirs = 5;
 }
 
