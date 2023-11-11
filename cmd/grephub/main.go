@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "net/http/pprof" // nolint
 	"os"
 
 	"github.com/xuender/gca"

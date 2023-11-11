@@ -2,35 +2,21 @@ package ag
 
 import (
 	"bufio"
-	"os"
-	"os/exec"
-	"path/filepath"
 
 	"github.com/samber/lo"
 	"github.com/xuender/grephub/pb"
-	"github.com/xuender/kit/los"
-	"github.com/xuender/kit/oss"
+	"github.com/xuender/grephub/search/grep"
 	"github.com/xuender/kit/types"
 )
 
 type Ag struct {
-	cmd string
-	ok  bool
+	grep.Grep
 }
 
 func NewAg() *Ag {
-	cmd := "ag"
-	if oss.IsWindows() {
-		cmd = "ag.exe"
-		if _, err := exec.LookPath(cmd); err != nil {
-			file := los.Must(os.Executable())
-			dir := filepath.Dir(file)
-			cmd = filepath.Join(dir, cmd)
-		}
-	}
-
-	ret := &Ag{cmd: cmd}
-	ret.ok = ret.Find()
+	ret := &Ag{}
+	ret.Name = "ag"
+	ret.Init()
 
 	return ret
 }
@@ -42,24 +28,18 @@ func (p *Ag) Cmd(query *pb.Query) (string, []string) {
 		args = append(args, "--max-count", types.Itoa(query.GetMaxCount()))
 	}
 
-	if len(query.GetTypes()) > 0 {
+	if len(query.GetAgTypes()) > 0 {
 		args = append(args, lo.Map(
-			query.GetTypes(),
+			query.GetAgTypes(),
 			func(str string, _ int) string { return "--" + str })...)
 	}
 
 	args = append(args, query.GetPaths()...)
 
-	return p.cmd, args
+	return p.Name, args
 }
 
-func (p *Ag) Find() bool {
-	_, err := exec.LookPath(p.cmd)
-
-	return err == nil
-}
-
-func (p *Ag) Search(reader *bufio.Reader, acks chan<- *pb.Ack) {
+func (p *Ag) Search(_ *pb.Query, reader *bufio.Reader, acks chan<- *pb.Ack) {
 	var (
 		ack   *pb.Ack
 		isNew = true

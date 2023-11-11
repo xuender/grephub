@@ -18,6 +18,7 @@ import (
 	"github.com/xuender/grephub/search/ag"
 	"github.com/xuender/grephub/search/grep"
 	"github.com/xuender/grephub/search/rg"
+	"github.com/xuender/grephub/search/ugrep"
 	"github.com/xuender/kit/los"
 	"github.com/xuender/kit/oss"
 	"google.golang.org/protobuf/proto"
@@ -32,6 +33,7 @@ type (
 		cancel context.CancelFunc
 		ag     *ag.Ag
 		rg     *rg.Rg
+		ug     *ugrep.Ugrep
 	}
 )
 
@@ -40,6 +42,7 @@ func NewService(
 	pro *oss.ProcInfo,
 	ags *ag.Ag,
 	rgs *rg.Rg,
+	ugs *ugrep.Ugrep,
 ) *Service {
 	serv := &Service{
 		cfg:   cfg,
@@ -47,6 +50,7 @@ func NewService(
 		pro:   pro,
 		ag:    ags,
 		rg:    rgs,
+		ug:    ugs,
 	}
 
 	serv.funcs[pb.Type_config] = serv.config
@@ -102,6 +106,8 @@ func (p *Service) query(msg *pb.Msg, conn *websocket.Conn) {
 		searcher = p.ag
 	case pb.Searcher_rg:
 		searcher = p.rg
+	case pb.Searcher_ug:
+		searcher = p.ug
 	}
 
 	los.Must0(searcher.Install())
@@ -151,6 +157,8 @@ func (p *Service) search(searcher Searcher, query *pb.Query, acks chan<- *pb.Ack
 	p.cancel = cancel
 	str, args := searcher.Cmd(query)
 
+	slog.Info("search", "cmd", str, "args", args)
+
 	cmd := exec.CommandContext(ctxTimeout, str, args...)
 	HideWindow(cmd)
 
@@ -163,7 +171,7 @@ func (p *Service) search(searcher Searcher, query *pb.Query, acks chan<- *pb.Ack
 		return
 	}
 
-	searcher.Search(reader, acks)
+	searcher.Search(query, reader, acks)
 
 	if err := cmd.Wait(); err != nil {
 		slog.Error("wait", "err", err, "cmd", str, "args", args)

@@ -38,19 +38,38 @@ build: clean
 	go build \
 	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-linux-amd64 cmd/grephub/main.go
+  -o dist/grephub-${VERSION}-linux-amd64 cmd/grephub/main.go
 
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
 	go build \
 	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-darwin-amd64 cmd/grephub/main.go
+  -o dist/grephub-${VERSION}-darwin-amd64 cmd/grephub/main.go
 
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
 	go build \
 	-ldflags "-s -w -H=windowsgui -X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub.exe cmd/grephub/main.go
+  -o dist/grephub-${VERSION}.exe cmd/grephub/main.go
+
+b:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+	go build \
+	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
+  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
+  -o dist/grephub-${VERSION}-linux-amd64 cmd/grephub/main.go
+
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
+	go build \
+	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
+  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
+  -o dist/grephub-${VERSION}-darwin-amd64 cmd/grephub/main.go
+
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
+	go build \
+	-ldflags "-s -w -H=windowsgui -X 'github.com/xuender/kit/oss.Version=${VERSION}' \
+  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
+  -o dist/grephub-${VERSION}.exe cmd/grephub/main.go
 
 wire:
 	wire gen ${PACKAGE}/app

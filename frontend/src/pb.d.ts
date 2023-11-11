@@ -569,8 +569,17 @@ export namespace pb {
         /** Query paths */
         paths?: (string[]|null);
 
-        /** Query types */
-        types?: (string[]|null);
+        /** Query rgTypes */
+        rgTypes?: (string[]|null);
+
+        /** Query agTypes */
+        agTypes?: (string[]|null);
+
+        /** Query ugTypes */
+        ugTypes?: (string[]|null);
+
+        /** Query grepType */
+        grepType?: (string|null);
     }
 
     /** Represents a Query. */
@@ -594,8 +603,17 @@ export namespace pb {
         /** Query paths. */
         public paths: string[];
 
-        /** Query types. */
-        public types: string[];
+        /** Query rgTypes. */
+        public rgTypes: string[];
+
+        /** Query agTypes. */
+        public agTypes: string[];
+
+        /** Query ugTypes. */
+        public ugTypes: string[];
+
+        /** Query grepType. */
+        public grepType: string;
 
         /**
          * Creates a new Query instance using the specified properties.
@@ -678,7 +696,8 @@ export namespace pb {
     /** Searcher enum. */
     enum Searcher {
         rg = 0,
-        ag = 1
+        ug = 1,
+        ag = 2
     }
 
     /** Properties of a Result. */

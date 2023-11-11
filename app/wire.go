@@ -10,6 +10,7 @@ import (
 	"github.com/xuender/grephub/search"
 	"github.com/xuender/grephub/search/ag"
 	"github.com/xuender/grephub/search/rg"
+	"github.com/xuender/grephub/search/ugrep"
 	"github.com/xuender/kit/oss"
 )
 
@@ -21,6 +22,7 @@ func InitApp() *gca.App[*pb.Msg] {
 		search.NewService,
 		ag.NewAg,
 		rg.NewRg,
+		ugrep.NewUgrep,
 	)
 
 	return gca.NewApp[*pb.Msg]()

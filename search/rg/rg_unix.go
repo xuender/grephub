@@ -35,7 +35,7 @@ yum install ripgrep`,
 }
 
 func (p *Rg) Install() error {
-	if p.ok {
+	if p.Ready() {
 		return nil
 	}
 

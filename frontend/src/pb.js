@@ -1438,7 +1438,10 @@ $root.pb = (function() {
          * @property {number|null} [maxCount] Query maxCount
          * @property {pb.Searcher|null} [searcher] Query searcher
          * @property {Array.<string>|null} [paths] Query paths
-         * @property {Array.<string>|null} [types] Query types
+         * @property {Array.<string>|null} [rgTypes] Query rgTypes
+         * @property {Array.<string>|null} [agTypes] Query agTypes
+         * @property {Array.<string>|null} [ugTypes] Query ugTypes
+         * @property {string|null} [grepType] Query grepType
          */
 
         /**
@@ -1451,7 +1454,9 @@ $root.pb = (function() {
          */
         function Query(properties) {
             this.paths = [];
-            this.types = [];
+            this.rgTypes = [];
+            this.agTypes = [];
+            this.ugTypes = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -1491,12 +1496,36 @@ $root.pb = (function() {
         Query.prototype.paths = $util.emptyArray;
 
         /**
-         * Query types.
-         * @member {Array.<string>} types
+         * Query rgTypes.
+         * @member {Array.<string>} rgTypes
          * @memberof pb.Query
          * @instance
          */
-        Query.prototype.types = $util.emptyArray;
+        Query.prototype.rgTypes = $util.emptyArray;
+
+        /**
+         * Query agTypes.
+         * @member {Array.<string>} agTypes
+         * @memberof pb.Query
+         * @instance
+         */
+        Query.prototype.agTypes = $util.emptyArray;
+
+        /**
+         * Query ugTypes.
+         * @member {Array.<string>} ugTypes
+         * @memberof pb.Query
+         * @instance
+         */
+        Query.prototype.ugTypes = $util.emptyArray;
+
+        /**
+         * Query grepType.
+         * @member {string} grepType
+         * @memberof pb.Query
+         * @instance
+         */
+        Query.prototype.grepType = "";
 
         /**
          * Creates a new Query instance using the specified properties.
@@ -1531,9 +1560,17 @@ $root.pb = (function() {
             if (message.paths != null && message.paths.length)
                 for (var i = 0; i < message.paths.length; ++i)
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.paths[i]);
-            if (message.types != null && message.types.length)
-                for (var i = 0; i < message.types.length; ++i)
-                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.types[i]);
+            if (message.rgTypes != null && message.rgTypes.length)
+                for (var i = 0; i < message.rgTypes.length; ++i)
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.rgTypes[i]);
+            if (message.agTypes != null && message.agTypes.length)
+                for (var i = 0; i < message.agTypes.length; ++i)
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.agTypes[i]);
+            if (message.ugTypes != null && message.ugTypes.length)
+                for (var i = 0; i < message.ugTypes.length; ++i)
+                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.ugTypes[i]);
+            if (message.grepType != null && Object.hasOwnProperty.call(message, "grepType"))
+                writer.uint32(/* id 8, wireType 2 =*/66).string(message.grepType);
             return writer;
         };
 
@@ -1587,9 +1624,25 @@ $root.pb = (function() {
                         break;
                     }
                 case 5: {
-                        if (!(message.types && message.types.length))
-                            message.types = [];
-                        message.types.push(reader.string());
+                        if (!(message.rgTypes && message.rgTypes.length))
+                            message.rgTypes = [];
+                        message.rgTypes.push(reader.string());
+                        break;
+                    }
+                case 6: {
+                        if (!(message.agTypes && message.agTypes.length))
+                            message.agTypes = [];
+                        message.agTypes.push(reader.string());
+                        break;
+                    }
+                case 7: {
+                        if (!(message.ugTypes && message.ugTypes.length))
+                            message.ugTypes = [];
+                        message.ugTypes.push(reader.string());
+                        break;
+                    }
+                case 8: {
+                        message.grepType = reader.string();
                         break;
                     }
                 default:
@@ -1639,6 +1692,7 @@ $root.pb = (function() {
                     return "searcher: enum value expected";
                 case 0:
                 case 1:
+                case 2:
                     break;
                 }
             if (message.paths != null && message.hasOwnProperty("paths")) {
@@ -1648,13 +1702,30 @@ $root.pb = (function() {
                     if (!$util.isString(message.paths[i]))
                         return "paths: string[] expected";
             }
-            if (message.types != null && message.hasOwnProperty("types")) {
-                if (!Array.isArray(message.types))
-                    return "types: array expected";
-                for (var i = 0; i < message.types.length; ++i)
-                    if (!$util.isString(message.types[i]))
-                        return "types: string[] expected";
+            if (message.rgTypes != null && message.hasOwnProperty("rgTypes")) {
+                if (!Array.isArray(message.rgTypes))
+                    return "rgTypes: array expected";
+                for (var i = 0; i < message.rgTypes.length; ++i)
+                    if (!$util.isString(message.rgTypes[i]))
+                        return "rgTypes: string[] expected";
             }
+            if (message.agTypes != null && message.hasOwnProperty("agTypes")) {
+                if (!Array.isArray(message.agTypes))
+                    return "agTypes: array expected";
+                for (var i = 0; i < message.agTypes.length; ++i)
+                    if (!$util.isString(message.agTypes[i]))
+                        return "agTypes: string[] expected";
+            }
+            if (message.ugTypes != null && message.hasOwnProperty("ugTypes")) {
+                if (!Array.isArray(message.ugTypes))
+                    return "ugTypes: array expected";
+                for (var i = 0; i < message.ugTypes.length; ++i)
+                    if (!$util.isString(message.ugTypes[i]))
+                        return "ugTypes: string[] expected";
+            }
+            if (message.grepType != null && message.hasOwnProperty("grepType"))
+                if (!$util.isString(message.grepType))
+                    return "grepType: string expected";
             return null;
         };
 
@@ -1685,9 +1756,13 @@ $root.pb = (function() {
             case 0:
                 message.searcher = 0;
                 break;
-            case "ag":
+            case "ug":
             case 1:
                 message.searcher = 1;
+                break;
+            case "ag":
+            case 2:
+                message.searcher = 2;
                 break;
             }
             if (object.paths) {
@@ -1697,13 +1772,29 @@ $root.pb = (function() {
                 for (var i = 0; i < object.paths.length; ++i)
                     message.paths[i] = String(object.paths[i]);
             }
-            if (object.types) {
-                if (!Array.isArray(object.types))
-                    throw TypeError(".pb.Query.types: array expected");
-                message.types = [];
-                for (var i = 0; i < object.types.length; ++i)
-                    message.types[i] = String(object.types[i]);
+            if (object.rgTypes) {
+                if (!Array.isArray(object.rgTypes))
+                    throw TypeError(".pb.Query.rgTypes: array expected");
+                message.rgTypes = [];
+                for (var i = 0; i < object.rgTypes.length; ++i)
+                    message.rgTypes[i] = String(object.rgTypes[i]);
             }
+            if (object.agTypes) {
+                if (!Array.isArray(object.agTypes))
+                    throw TypeError(".pb.Query.agTypes: array expected");
+                message.agTypes = [];
+                for (var i = 0; i < object.agTypes.length; ++i)
+                    message.agTypes[i] = String(object.agTypes[i]);
+            }
+            if (object.ugTypes) {
+                if (!Array.isArray(object.ugTypes))
+                    throw TypeError(".pb.Query.ugTypes: array expected");
+                message.ugTypes = [];
+                for (var i = 0; i < object.ugTypes.length; ++i)
+                    message.ugTypes[i] = String(object.ugTypes[i]);
+            }
+            if (object.grepType != null)
+                message.grepType = String(object.grepType);
             return message;
         };
 
@@ -1722,12 +1813,15 @@ $root.pb = (function() {
             var object = {};
             if (options.arrays || options.defaults) {
                 object.paths = [];
-                object.types = [];
+                object.rgTypes = [];
+                object.agTypes = [];
+                object.ugTypes = [];
             }
             if (options.defaults) {
                 object.pattern = "";
                 object.maxCount = 0;
                 object.searcher = options.enums === String ? "rg" : 0;
+                object.grepType = "";
             }
             if (message.pattern != null && message.hasOwnProperty("pattern"))
                 object.pattern = message.pattern;
@@ -1740,11 +1834,23 @@ $root.pb = (function() {
                 for (var j = 0; j < message.paths.length; ++j)
                     object.paths[j] = message.paths[j];
             }
-            if (message.types && message.types.length) {
-                object.types = [];
-                for (var j = 0; j < message.types.length; ++j)
-                    object.types[j] = message.types[j];
+            if (message.rgTypes && message.rgTypes.length) {
+                object.rgTypes = [];
+                for (var j = 0; j < message.rgTypes.length; ++j)
+                    object.rgTypes[j] = message.rgTypes[j];
             }
+            if (message.agTypes && message.agTypes.length) {
+                object.agTypes = [];
+                for (var j = 0; j < message.agTypes.length; ++j)
+                    object.agTypes[j] = message.agTypes[j];
+            }
+            if (message.ugTypes && message.ugTypes.length) {
+                object.ugTypes = [];
+                for (var j = 0; j < message.ugTypes.length; ++j)
+                    object.ugTypes[j] = message.ugTypes[j];
+            }
+            if (message.grepType != null && message.hasOwnProperty("grepType"))
+                object.grepType = message.grepType;
             return object;
         };
 
@@ -1782,12 +1888,14 @@ $root.pb = (function() {
      * @name pb.Searcher
      * @enum {number}
      * @property {number} rg=0 rg value
-     * @property {number} ag=1 ag value
+     * @property {number} ug=1 ug value
+     * @property {number} ag=2 ag value
      */
     pb.Searcher = (function() {
         var valuesById = {}, values = Object.create(valuesById);
         values[valuesById[0] = "rg"] = 0;
-        values[valuesById[1] = "ag"] = 1;
+        values[valuesById[1] = "ug"] = 1;
+        values[valuesById[2] = "ag"] = 2;
         return values;
     })();
 

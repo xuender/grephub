@@ -7,10 +7,14 @@ message Query {
 	uint32 maxCount = 2;
 	Searcher searcher = 3;
 	repeated string paths = 4;
-	repeated string types = 5;
+	repeated string rgTypes = 5;
+	repeated string agTypes = 6;
+	repeated string ugTypes = 7;
+	string grepType = 8;
 }
 
 enum Searcher {
 	rg = 0;
-	ag = 1;
+	ug = 1;
+	ag = 2;
 }

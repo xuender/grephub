@@ -8,6 +8,6 @@ import (
 
 type Searcher interface {
 	Cmd(query *pb.Query) (string, []string)
-	Search(reader *bufio.Reader, acks chan<- *pb.Ack)
+	Search(query *pb.Query, reader *bufio.Reader, acks chan<- *pb.Ack)
 	Install() error
 }

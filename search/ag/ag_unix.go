@@ -35,7 +35,7 @@ yum install epel-release.noarch the_silver_searcher`,
 }
 
 func (p *Ag) Install() error {
-	if p.ok {
+	if p.Ready() {
 		return nil
 	}
 

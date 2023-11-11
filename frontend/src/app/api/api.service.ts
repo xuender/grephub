@@ -50,7 +50,13 @@ export class ApiService {
   ]);
   dirs: string[] = [];
   isRun = false;
-  query: pb.IQuery = { maxCount: 1, pattern: '', types: [] };
+  query: pb.IQuery = {
+    maxCount: 1,
+    pattern: '',
+    agTypes: [],
+    rgTypes: [],
+    grepType: '',
+  };
   private _acks: pb.IAck[] = [];
   private size = loadSize;
   pro = '';
@@ -68,7 +74,22 @@ export class ApiService {
     });
   }
 
-  length() {
+  get types() {
+    if (!this.query) {
+      return [];
+    }
+
+    switch (this.query.searcher) {
+      case pb.Searcher.ag:
+        return this.query.agTypes ? this.query.agTypes : [];
+      case pb.Searcher.rg:
+        return this.query.rgTypes ? this.query.rgTypes : [];
+      default:
+        return [];
+    }
+  }
+
+  get length() {
     return this._acks.length;
   }
 
@@ -94,11 +115,19 @@ export class ApiService {
     return this.query.paths.includes(dir);
   }
 
-  count() {
+  get count() {
     let count = 0;
     for (const ack of this._acks) {
-      if (ack.mates) {
-        count += ack.mates.length;
+      if (!ack.mates) {
+        continue;
+      }
+
+      for (const mate of ack.mates) {
+        if (!mate.hits) {
+          continue;
+        }
+
+        count += mate.hits.length;
       }
     }
 

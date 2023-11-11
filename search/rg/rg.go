@@ -4,34 +4,20 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"os"
-	"os/exec"
-	"path/filepath"
 
 	"github.com/samber/lo"
 	"github.com/xuender/grephub/pb"
-	"github.com/xuender/kit/los"
-	"github.com/xuender/kit/oss"
+	"github.com/xuender/grephub/search/grep"
 )
 
 type Rg struct {
-	cmd string
-	ok  bool
+	grep.Grep
 }
 
 func NewRg() *Rg {
-	cmd := "rg"
-	if oss.IsWindows() {
-		cmd = "rg.exe"
-		if _, err := exec.LookPath(cmd); err != nil {
-			file := los.Must(os.Executable())
-			dir := filepath.Dir(file)
-			cmd = filepath.Join(dir, cmd)
-		}
-	}
-
-	ret := &Rg{cmd: cmd}
-	ret.ok = ret.Find()
+	ret := &Rg{}
+	ret.Name = "rg"
+	ret.Init()
 
 	return ret
 }
@@ -43,24 +29,18 @@ func (p *Rg) Cmd(query *pb.Query) (string, []string) {
 		args = append(args, fmt.Sprintf("-m=%d", query.GetMaxCount()))
 	}
 
-	if len(query.GetTypes()) > 0 {
+	if len(query.GetRgTypes()) > 0 {
 		args = append(args, lo.Map(
-			query.GetTypes(),
+			query.GetRgTypes(),
 			func(str string, _ int) string { return "-t" + str })...)
 	}
 
 	args = append(args, query.GetPaths()...)
 
-	return p.cmd, args
+	return p.Name, args
 }
 
-func (p *Rg) Find() bool {
-	_, err := exec.LookPath(p.cmd)
-
-	return err == nil
-}
-
-func (p *Rg) Search(reader *bufio.Reader, acks chan<- *pb.Ack) {
+func (p *Rg) Search(_ *pb.Query, reader *bufio.Reader, acks chan<- *pb.Ack) {
 	var ack *pb.Ack
 
 	for {

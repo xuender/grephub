@@ -12,6 +12,7 @@ import (
 	"github.com/xuender/grephub/search"
 	"github.com/xuender/grephub/search/ag"
 	"github.com/xuender/grephub/search/rg"
+	"github.com/xuender/grephub/search/ugrep"
 	"github.com/xuender/kit/oss"
 )
 
@@ -22,7 +23,8 @@ func InitApp() *gca.App[*pb.Msg] {
 	procInfo := oss.NewProcInfo()
 	agAg := ag.NewAg()
 	rgRg := rg.NewRg()
-	service := search.NewService(config, procInfo, agAg, rgRg)
+	ugrepUgrep := ugrep.NewUgrep()
+	service := search.NewService(config, procInfo, agAg, rgRg, ugrepUgrep)
 	app := NewApp(service)
 	return app
 }

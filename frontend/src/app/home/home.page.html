@@ -29,7 +29,7 @@
       </ion-list-header>
       <ion-item *ngFor="let p of api.dirs">
         <ion-label>{{ p }} </ion-label>
-        <ion-button color="danger" (click)="api.delDir(p)">
+        <ion-button *ngIf="!api.hasDir(p)" color="danger" (click)="api.delDir(p)">
           <ion-icon name="trash" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-item>
@@ -42,14 +42,14 @@
         <ion-label>Options</ion-label>
       </ion-list-header>
       <ion-item>
-        <ion-select label="Searcher" [(ngModel)]="api.query.searcher" (ngModelChange)="api.query.types=[]">
+        <ion-select label="Searcher" [(ngModel)]="api.query.searcher">
           <ion-select-option *ngFor="let searcher of searchers;index as i" [value]="i">{{ searcher
             }}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item [button]="true" [detail]="false" id="select-type">
         <ion-label>Types</ion-label>
-        <div slot="end" id="selected-type">{{ api.query.types }}</div>
+        <div slot="end" id="selected-type">{{ api.types }}</div>
       </ion-item>
       <ion-item>
         <ion-input label="Max Count" type="number" [(ngModel)]="api.query.maxCount"></ion-input>
@@ -88,29 +88,17 @@
     </ion-header>
     <ion-row>
       <ion-col size="12" size-lg="6" offset-lg="3">
-        <ion-card *ngIf="!api.acks.length">
+        <ion-card [class]="api.acks.length?'ion-hide':''">
           <ion-card-header>
             <ion-card-title>Grep Hub</ion-card-title>
+            <ion-card-subtitle>Supports multiple popular search tools</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>
-            <p>
-              The Silver Searcher is a tool for searching code. It started off as a clone of <a
-                href="http://beyondgrep.com/">Ack</a>,
-              but their feature sets have since diverged slightly.
-              In typical usage,
-              Ag is 5-10x faster than Ack. See <a href="https://github.com/ggreer/the_silver_searcher"
-                target="_blank">the
-                GitHub page</a>
-              for more info.
-            </p>
-            <p>
-              Win32/64 Unofficial daily builds are <a href="https://github.com/k-takata/the_silver_searcher-win32"
-                target="_blank">available</a>.
-            </p>
-            <p>
-              <a href="https://github.com/xuender/agp" target="_blank">The Silver Searcher plus</a> is UI developed by
-              Golang, based on Chrome.
-            </p>
+            <ion-radio-group [(ngModel)]="api.query.searcher">
+              <ion-item *ngFor="let searcher of searchers;index as i">
+                <ion-radio [value]="i">{{ searcher}}</ion-radio>
+              </ion-item>
+            </ion-radio-group>
           </ion-card-content>
 
           <ion-button fill="clear" (click)="menu.open()">Menu</ion-button>
@@ -129,21 +117,17 @@
 
   <ion-footer>
     <ion-item>
-      <!-- <ion-input label="Pattern" [value]="api.query.pattern" class="pattern" readonly="true" type="text"></ion-input>
-      <ion-input label="File" [value]="api.length()" class="file" readonly="true" type="number"></ion-input>
-      <ion-input label="Count" [value]="api.count()" class="count" readonly="true" type="number"></ion-input>
-      <ion-input label="Time" [value]="api.time" class="time" readonly="true" type="text"></ion-input> -->
       <ion-label>
         Pattern <ion-text color="danger">{{ api.query.pattern }}</ion-text>
       </ion-label>
       <ion-label>
         File <ion-text color="secondary">
-          <app-animated-number [num]="api.length()"></app-animated-number>
+          <app-animated-number [num]="api.length"></app-animated-number>
         </ion-text>
       </ion-label>
       <ion-label>
         Count <ion-text color="primary">
-          <app-animated-number [num]="api.count()"></app-animated-number>
+          <app-animated-number [num]="api.count"></app-animated-number>
         </ion-text>
       </ion-label>
       <ion-label>
@@ -155,7 +139,7 @@
 
 <ion-modal trigger="select-type" #modal>
   <ng-template>
-    <app-types class="ion-page" [selected]="api.query.types" [searcher]="api.query.searcher"
+    <app-types class="ion-page" [selected]="api.types" [searcher]="api.query.searcher"
       (selectionChange)="selectionChanged($event)" (selectionCancel)="modal.dismiss()"></app-types>
   </ng-template>
 </ion-modal>

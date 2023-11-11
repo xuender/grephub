@@ -9,6 +9,7 @@ import {
   IonCard,
   IonCardContent,
   IonCardHeader,
+  IonCardSubtitle,
   IonCardTitle,
   IonCol,
   IonContent,
@@ -26,6 +27,8 @@ import {
   IonMenuButton,
   IonModal,
   IonProgressBar,
+  IonRadio,
+  IonRadioGroup,
   IonRow,
   IonSearchbar,
   IonSelect,
@@ -45,6 +48,7 @@ import {
   trash,
 } from 'ionicons/icons';
 
+import { pb } from 'src/pb';
 import { AckComponent } from '../ack/ack.component';
 import { AnimatedNumberComponent } from '../animated-number/animated-number.component';
 import { ApiService } from '../api/api.service';
@@ -79,11 +83,14 @@ const sleep = (msec: number) =>
     IonMenuButton,
     IonToggle,
     FormsModule,
-    IonInput,
     IonModal,
+    IonRadio,
+    IonRadioGroup,
     IonCard,
     IonCardHeader,
     IonCardTitle,
+    IonCardSubtitle,
+    IonInput,
     IonCol,
     IonRow,
     IonText,
@@ -105,7 +112,7 @@ export class HomePage implements OnInit {
   @ViewChild('search', { static: true })
   search!: IonSearchbar;
   isDel = false;
-  searchers = ['ripgrep', 'The Silver Searcher'];
+  searchers = ['ripgrep(rg)', 'ugrep(ag)', 'The Silver Searcher(ag)'];
   constructor(public api: ApiService) {
     addIcons({ cog, searchCircle, addCircle, trash, toggle, closeCircle });
     this.api.onStop$.subscribe((_) => this.onClose());
@@ -123,7 +130,15 @@ export class HomePage implements OnInit {
   }
 
   selectionChanged(types: string[]) {
-    this.api.query.types = types;
+    switch (this.api.query.searcher) {
+      case pb.Searcher.ag:
+        this.api.query.agTypes = types;
+        break;
+      case pb.Searcher.rg:
+        this.api.query.rgTypes = types;
+        break;
+    }
+
     this.modal.dismiss();
   }
 
