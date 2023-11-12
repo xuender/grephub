@@ -22,7 +22,7 @@ watch-test:
 
 clean:
 	rm -rf dist
-	rm -rf app/www
+	# rm -rf app/www
 
 proto: protojs
 	protoc --go_out=. pb/*.proto
@@ -32,7 +32,7 @@ protojs:
 	cd frontend && node_modules/.bin/pbts -o src/pb.d.ts src/pb.js
 
 build: clean
-	./frontend/node_modules/.bin/ng build --base-href ./
+	# ./frontend/node_modules/.bin/ng build --base-href ./
 
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 	go build \

@@ -6,7 +6,6 @@ import (
 	_ "net/http/pprof" // nolint
 	"os"
 
-	"github.com/xuender/gca"
 	"github.com/xuender/grephub/app"
 )
 
@@ -17,7 +16,7 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
-	app.InitApp().Run(int(port), gca.NewOption().Maximized(true))
+	app.InitApp().Run(int(port))
 }
 
 func usage() {
