@@ -16,6 +16,7 @@ export class ApiService {
   isRun = false;
   query: pb.Query = {
     maxCount: 1,
+    searcher: 0,
     pattern: '',
     agTypes: [],
     rgTypes: [],
@@ -34,6 +35,7 @@ export class ApiService {
     this.config();
 
     EventsOn('alert', (msg) => {
+      this.isRun = false;
       this.onAlert(msg);
     });
     EventsOn('stop', (dur) => {
@@ -47,12 +49,15 @@ export class ApiService {
 
   async addDirs() {
     await AddDirs();
+
     await this.config();
   }
 
   async delDir(dir: string) {
     await DelDir(dir);
+
     await this.config();
+
     const toast = await this.toastCtrl.create({
       message: `config remove ${dir}.`,
       duration: 1000,
@@ -67,8 +72,14 @@ export class ApiService {
     }
 
     if (msg.query) {
+      if (!msg.query.searcher) {
+        msg.query.searcher = 0;
+      }
+
       this.query = msg.query;
     }
+
+    console.log(msg);
 
     if (msg.value) {
       const list: string[] = [];
@@ -199,6 +210,7 @@ export class ApiService {
 
   async open(file: string) {
     await Open(file);
+
     const toast = await this.toastCtrl.create({
       message: `Open ${file}.`,
       duration: 1000,

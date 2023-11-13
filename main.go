@@ -29,7 +29,7 @@ func main() {
 			Assets: assets,
 		},
 		// nolint
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		BackgroundColour: &options.RGBA{R: 27, G: 33, B: 54, A: 1},
 		OnStartup:        app.Startup,
 		Bind:             []any{app},
 	}))

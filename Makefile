@@ -21,52 +21,14 @@ watch-test:
 	reflex -t 50ms -s -- sh -c 'go test -race -v ./...'
 
 clean:
-	rm -rf dist
-	rm -rf app/www
+	rm -rf build/bin
 
 proto: protojs
 	protoc --go_out=. pb/*.proto
 
 
 build: clean
-	./frontend/node_modules/.bin/ng build --base-href ./
-
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-	go build \
-	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
-  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-${VERSION}-linux-amd64 cmd/grephub/main.go
-
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
-	go build \
-	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
-  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-${VERSION}-darwin-amd64 cmd/grephub/main.go
-
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
-	go build \
-	-ldflags "-s -w -H=windowsgui -X 'github.com/xuender/kit/oss.Version=${VERSION}' \
-  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-${VERSION}.exe cmd/grephub/main.go
-
-b:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-	go build \
-	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
-  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-${VERSION}-linux-amd64 cmd/grephub/main.go
-
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 \
-	go build \
-	-ldflags "-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
-  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-${VERSION}-darwin-amd64 cmd/grephub/main.go
-
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 \
-	go build \
-	-ldflags "-s -w -H=windowsgui -X 'github.com/xuender/kit/oss.Version=${VERSION}' \
-  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'" \
-  -o dist/grephub-${VERSION}.exe cmd/grephub/main.go
+	wails build -platform linux/amd64,darwin/amd64,windows/amd64 -nsis
 
 wire:
 	wire gen ${PACKAGE}/app

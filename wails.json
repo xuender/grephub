@@ -9,5 +9,11 @@
 	"author": {
 		"name": "ender",
 		"email": "xuender@139.com"
+	},
+	"info": {
+		"productVersion": "0.1.3",
+		"companyName": "github.com/xuender",
+		"copyright": "ender, 2023~time.Now",
+		"comments": "Built using Wails (https://wails.io)"
 	}
 }

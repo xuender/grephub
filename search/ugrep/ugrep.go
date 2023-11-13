@@ -6,8 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"path/filepath"
 	"strings"
 
+	"github.com/samber/lo"
 	"github.com/xuender/grephub/pb"
 	"github.com/xuender/grephub/search/grep"
 	"github.com/xuender/kit/types"
@@ -36,7 +38,10 @@ func (p *Ugrep) Cmd(query *pb.Query) (string, []string) {
 		args = append(args, "-t", strings.Join(query.GetUgTypes(), ","))
 	}
 
-	args = append(args, query.GetPaths()...)
+	args = append(args, lo.Map(
+		query.GetPaths(),
+		func(path string, _ int) string { return filepath.Join(path, "*") },
+	)...)
 
 	return p.Name, args
 }
