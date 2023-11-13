@@ -7,6 +7,7 @@ toolchain go1.21.2
 // replace github.com/xx/xx => ../xx
 
 require (
+	github.com/goccy/go-json v0.10.2
 	github.com/google/wire v0.5.0
 	github.com/ncruces/zenity v0.10.10
 	github.com/pelletier/go-toml/v2 v2.1.0

@@ -7,11 +7,10 @@
 package app
 
 import (
+	"github.com/xuender/grephub/app/ag"
+	"github.com/xuender/grephub/app/rg"
+	"github.com/xuender/grephub/app/ugrep"
 	"github.com/xuender/grephub/pb"
-	"github.com/xuender/grephub/search"
-	"github.com/xuender/grephub/search/ag"
-	"github.com/xuender/grephub/search/rg"
-	"github.com/xuender/grephub/search/ugrep"
 	"github.com/xuender/kit/oss"
 )
 
@@ -23,7 +22,7 @@ func InitApp() *App {
 	agAg := ag.NewAg()
 	rgRg := rg.NewRg()
 	ugrepUgrep := ugrep.NewUgrep()
-	service := search.NewService(config, procInfo, agAg, rgRg, ugrepUgrep)
+	service := NewService(config, procInfo, agAg, rgRg, ugrepUgrep)
 	app := NewApp(service)
 	return app
 }

@@ -40,7 +40,7 @@ export class AckComponent {
       return;
     }
 
-    this.open(file);
+    this.api.open(file);
   }
 
   html(mate: pb.Mate) {

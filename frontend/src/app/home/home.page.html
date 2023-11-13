@@ -43,8 +43,9 @@
       </ion-list-header>
       <ion-item>
         <ion-select label="Searcher" [(ngModel)]="api.query.searcher">
-          <ion-select-option *ngFor="let searcher of searchers;index as i" [value]="i">{{ searcher
-            }}</ion-select-option>
+          <ion-select-option *ngFor="let s of searchers" [value]="s.id">
+            {{ s.name }}
+          </ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item [button]="true" [detail]="false" id="select-type">
@@ -95,14 +96,15 @@
           </ion-card-header>
           <ion-card-content>
             <ion-radio-group [(ngModel)]="api.query.searcher">
-              <ion-item *ngFor="let searcher of searchers;index as i">
-                <ion-radio [value]="i">{{ searcher}}</ion-radio>
+              <ion-item *ngFor="let s of searchers">
+                <ion-radio [value]="s.id">{{ s.name }}</ion-radio>
+                <ion-note slot="end">{{ s.short }}</ion-note>
               </ion-item>
             </ion-radio-group>
           </ion-card-content>
 
           <ion-button fill="clear" (click)="menu.open()">Menu</ion-button>
-          <ion-button fill="clear" id="about-btn">About</ion-button>
+          <ion-button fill="clear" (click)="about()">About</ion-button>
         </ion-card>
       </ion-col>
     </ion-row>
@@ -121,14 +123,10 @@
         Pattern <ion-text color="danger">{{ api.query.pattern }}</ion-text>
       </ion-label>
       <ion-label>
-        File <ion-text color="secondary">
-          <app-animated-number [num]="api.length"></app-animated-number>
-        </ion-text>
+        File <ion-text color="secondary">{{ api.length }}</ion-text>
       </ion-label>
       <ion-label>
-        Count <ion-text color="primary">
-          <app-animated-number [num]="api.count"></app-animated-number>
-        </ion-text>
+        Count <ion-text color="primary">{{ api.count }}</ion-text>
       </ion-label>
       <ion-label>
         Time <ion-text color="tertiary">{{ api.time }}</ion-text>
@@ -141,24 +139,5 @@
   <ng-template>
     <app-types class="ion-page" [selected]="api.types" [searcher]="api.query.searcher"
       (selectionChange)="selectionChanged($event)" (selectionCancel)="modal.dismiss()"></app-types>
-  </ng-template>
-</ion-modal>
-
-<ion-modal trigger="about-btn" #aboutModal>
-  <ng-template>
-    <ion-header [translucent]="true">
-      <ion-toolbar>
-        <ion-title>About</ion-title>
-        <ion-buttons slot="end">
-          <ion-button color="danger" (click)="aboutModal.dismiss()">
-            <ion-icon name="close-circle" slot="icon-only"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content class="ion-padding">
-      <div class="about" [innerHTML]="api.pro"></div>
-    </ion-content>
   </ng-template>
 </ion-modal>

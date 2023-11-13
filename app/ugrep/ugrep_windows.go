@@ -3,7 +3,7 @@ package ugrep
 import (
 	_ "embed"
 
-	"github.com/xuender/grephub/search/grep"
+	"github.com/xuender/grephub/app/grep"
 )
 
 var _cmds = [...]string{

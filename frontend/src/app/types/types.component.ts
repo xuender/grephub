@@ -18,6 +18,7 @@ import { addIcons } from 'ionicons';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 
 const types = [
+  [],
   [
     ['agda', ' *.agda, *.lagda'],
     ['aidl', ' *.aidl'],

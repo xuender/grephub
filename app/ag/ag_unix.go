@@ -3,7 +3,7 @@
 package ag
 
 import (
-	"github.com/xuender/grephub/search/grep"
+	"github.com/xuender/grephub/app/grep"
 )
 
 // nolint

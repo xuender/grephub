@@ -26,6 +26,7 @@ import {
   IonMenu,
   IonMenuButton,
   IonModal,
+  IonNote,
   IonProgressBar,
   IonRadio,
   IonRadioGroup,
@@ -37,6 +38,7 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -48,10 +50,11 @@ import {
   trash,
 } from 'ionicons/icons';
 
+import { AboutComponent } from '../about/about.component';
 import { AckComponent } from '../ack/ack.component';
-import { AnimatedNumberComponent } from '../animated-number/animated-number.component';
 import { ApiService } from '../api/api.service';
 import { TypesComponent } from '../types/types.component';
+import { Searchers } from '../api/searcher';
 
 const sleep = (msec: number) =>
   new Promise<void>((resolve) => setTimeout(() => resolve(), msec));
@@ -100,21 +103,30 @@ const sleep = (msec: number) =>
     IonInfiniteScroll,
     IonInfiniteScrollContent,
     TypesComponent,
-    AnimatedNumberComponent,
+    AboutComponent,
+    IonNote,
   ],
 })
 export class HomePage implements OnInit {
   @ViewChild('modal', { static: true })
-  modal!: IonModal;
+  typesModal!: IonModal;
   @ViewChild('menu', { static: true })
   menu!: IonMenu;
   @ViewChild('search', { static: true })
   search!: IonSearchbar;
   isDel = false;
-  searchers = ['ripgrep(rg)', 'ugrep(ag)', 'The Silver Searcher(ag)'];
-  constructor(public api: ApiService) {
+  searchers = Searchers;
+  constructor(public api: ApiService, private modalCtrl: ModalController) {
     addIcons({ cog, searchCircle, addCircle, trash, toggle, closeCircle });
     this.api.onStop$.subscribe((_) => this.onClose());
+  }
+
+  async about() {
+    const modal = await this.modalCtrl.create({
+      component: AboutComponent,
+    });
+
+    await modal.present();
   }
 
   async ngOnInit() {
@@ -130,18 +142,21 @@ export class HomePage implements OnInit {
 
   selectionChanged(types: string[]) {
     switch (this.api.query.searcher) {
-      case 2:
-        this.api.query.agTypes = types;
-        break;
       case 1:
-        this.api.query.ugTypes = types;
-        break;
-      case 0:
         this.api.query.rgTypes = types;
+
+        break;
+      case 2:
+        this.api.query.ugTypes = types;
+
+        break;
+      case 3:
+        this.api.query.agTypes = types;
+
         break;
     }
 
-    this.modal.dismiss();
+    this.typesModal.dismiss();
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {

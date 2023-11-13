@@ -1,4 +1,4 @@
-package search
+package app
 
 import (
 	"os/exec"

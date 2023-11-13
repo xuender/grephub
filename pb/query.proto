@@ -14,7 +14,8 @@ message Query {
 }
 
 enum Searcher {
-	rg = 0;
-	ug = 1;
-	ag = 2;
+	none = 0;
+	rg = 1;
+	ug = 2;
+	ag = 3;
 }

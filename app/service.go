@@ -1,8 +1,9 @@
-package search
+package app
 
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/exec"
@@ -13,17 +14,19 @@ import (
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"github.com/xuender/grephub/app/ag"
+	"github.com/xuender/grephub/app/grep"
+	"github.com/xuender/grephub/app/rg"
+	"github.com/xuender/grephub/app/ugrep"
 	"github.com/xuender/grephub/pb"
-	"github.com/xuender/grephub/search/ag"
-	"github.com/xuender/grephub/search/grep"
-	"github.com/xuender/grephub/search/rg"
-	"github.com/xuender/grephub/search/ugrep"
 	"github.com/xuender/kit/los"
 	"github.com/xuender/kit/oss"
 )
 
 type (
 	Service struct {
+		// nolint
+		ctx    context.Context
 		cfg    *pb.Config
 		pro    *oss.ProcInfo
 		cancel context.CancelFunc
@@ -51,15 +54,14 @@ func NewService(
 	return serv
 }
 
-func (p *Service) Config() *pb.Msg {
+func (p *Service) About() string {
+	return p.pro.String()
+}
+
+func (p *Service) Config() *pb.Config {
 	p.cfg.Save()
 
-	return &pb.Msg{
-		Dirs:  p.cfg.GetDirs(),
-		Query: p.cfg.GetQuery(),
-		Value: p.pro.String(),
-		Type:  pb.Type_config,
-	}
+	return p.cfg
 }
 
 func (p *Service) AddDirs() {
@@ -73,6 +75,7 @@ func (p *Service) AddDirs() {
 	}
 
 	p.cfg.Dirs = append(p.cfg.GetDirs(), dirs...)
+	p.cfg.Save()
 }
 
 func (p *Service) DelDir(dir string) {
@@ -82,6 +85,7 @@ func (p *Service) DelDir(dir string) {
 	}
 
 	p.cfg.Dirs = slices.Delete(p.cfg.GetDirs(), idx, idx+1)
+	p.cfg.Save()
 }
 
 func (p *Service) Open(path string) {
@@ -94,7 +98,40 @@ func (p *Service) Open(path string) {
 	los.Must0(browser.OpenFile(path))
 }
 
-func (p *Service) Query(ctx context.Context, query *pb.Query) *pb.Query {
+func (p *Service) recover() {
+	if err := recover(); err != nil {
+		runtime.EventsEmit(p.ctx, "alert", fmt.Sprintf("%v", err))
+	}
+}
+
+func (p *Service) Query(query *pb.Query) []*pb.Ack {
+	defer p.recover()
+
+	searcher := p.getSearcher(query)
+	size := 100
+	acks := make(chan *pb.Ack, size)
+
+	go p.search(searcher, query, acks)
+
+	items := []*pb.Ack{}
+	for ack := range acks {
+		items = append(items, ack)
+	}
+
+	return items
+}
+
+func (p *Service) AsyncQuery(query *pb.Query) *pb.Query {
+	defer p.recover()
+
+	searcher := p.getSearcher(query)
+
+	go p.query(searcher, query)
+
+	return query
+}
+
+func (p *Service) getSearcher(query *pb.Query) Searcher {
 	if query.GetPattern() == "" {
 		panic(grep.ErrNoPattern)
 	}
@@ -108,6 +145,8 @@ func (p *Service) Query(ctx context.Context, query *pb.Query) *pb.Query {
 		searcher = p.rg
 	case pb.Searcher_ug:
 		searcher = p.ug
+	case pb.Searcher_none:
+		panic(grep.ErrNoSearcher)
 	}
 
 	los.Must0(searcher.Install())
@@ -119,33 +158,31 @@ func (p *Service) Query(ctx context.Context, query *pb.Query) *pb.Query {
 	p.cfg.Query = query
 	p.cfg.Save()
 
-	go p.query(ctx, searcher, query)
-
-	return query
+	return searcher
 }
 
-func (p *Service) query(ctx context.Context, searcher Searcher, query *pb.Query) {
+func (p *Service) query(searcher Searcher, query *pb.Query) {
 	size := 100
 	acks := make(chan *pb.Ack, size)
 	start := time.Now()
 
 	go p.search(searcher, query, acks)
 
-	msg := []*pb.Ack{}
+	items := []*pb.Ack{}
 	for ack := range acks {
-		msg = append(msg, ack)
-		if len(msg) >= size {
-			runtime.EventsEmit(ctx, "ack", msg)
+		items = append(items, ack)
+		if len(items) >= size {
+			runtime.EventsEmit(p.ctx, "ack", items)
 
-			msg = []*pb.Ack{}
+			items = []*pb.Ack{}
 		}
 	}
 
-	if len(msg) > 0 {
-		runtime.EventsEmit(ctx, "ack", msg)
+	if len(items) > 0 {
+		runtime.EventsEmit(p.ctx, "ack", items)
 	}
 
-	runtime.EventsEmit(ctx, "stop", time.Since(start).String())
+	runtime.EventsEmit(p.ctx, "stop", time.Since(start).String())
 }
 
 func (p *Service) search(searcher Searcher, query *pb.Query, acks chan<- *pb.Ack) {

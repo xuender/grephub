@@ -3,7 +3,14 @@ import { AlertController, ToastController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircle } from 'ionicons/icons';
 
-import { AddDirs, Config, DelDir, Open, Query } from 'wailsjs/go/app/App';
+import {
+  AddDirs,
+  AsyncQuery,
+  Query,
+  Config,
+  DelDir,
+  Open,
+} from 'wailsjs/go/app/Service';
 import { pb } from 'wailsjs/go/models';
 import { EventsOn } from 'wailsjs/runtime/runtime';
 const loadSize = 100;
@@ -24,7 +31,6 @@ export class ApiService {
   };
   private _acks: pb.Ack[] = [];
   private size = loadSize;
-  pro = '';
   time = '';
   constructor(
     private toastCtrl: ToastController,
@@ -80,21 +86,6 @@ export class ApiService {
     }
 
     console.log(msg);
-
-    if (msg.value) {
-      const list: string[] = [];
-
-      for (const kv of msg.value.split('\n')) {
-        if (!kv) {
-          continue;
-        }
-
-        const val = kv.split(': ');
-        list.push(`<tr><th>${val[0]}</th><td>${val[1]}</td></tr>`);
-      }
-
-      this.pro = `<table>${list.join('\n')}</table>`;
-    }
   }
 
   get types() {
@@ -103,12 +94,12 @@ export class ApiService {
     }
 
     switch (this.query.searcher) {
-      case 2:
-        return this.query.agTypes ? this.query.agTypes : [];
-      case 0:
-        return this.query.rgTypes ? this.query.rgTypes : [];
       case 1:
+        return this.query.rgTypes ? this.query.rgTypes : [];
+      case 2:
         return this.query.ugTypes ? this.query.ugTypes : [];
+      case 3:
+        return this.query.agTypes ? this.query.agTypes : [];
       default:
         return [];
     }
@@ -175,9 +166,24 @@ export class ApiService {
     this.query.paths.push(dir);
   }
 
-  async doQuery() {
+  doQuery() {
+    // return this.asyncQuery();
+    return this.Query();
+  }
+
+  async Query() {
     this.isRun = true;
-    const query = await Query(this.query);
+    this.size = loadSize;
+    const start = Date.now();
+
+    this._acks = await Query(this.query);
+    this.time = `${Date.now() - start}ms`;
+    this.isRun = false;
+  }
+
+  async asyncQuery() {
+    this.isRun = true;
+    const query = await AsyncQuery(this.query);
     if (!query) {
       return;
     }

@@ -3,7 +3,7 @@ package ag_test
 import (
 	"fmt"
 
-	"github.com/xuender/grephub/search/ag"
+	"github.com/xuender/grephub/app/ag"
 )
 
 func ExampleNewMate() {

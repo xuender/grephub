@@ -106,23 +106,17 @@ export namespace pb {
 	        this.grepType = source["grepType"];
 	    }
 	}
-	export class Msg {
-	    type?: number;
+	export class Config {
 	    query?: Query;
-	    value?: string;
-	    ack?: Ack[];
 	    dirs?: string[];
 	
 	    static createFrom(source: any = {}) {
-	        return new Msg(source);
+	        return new Config(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.type = source["type"];
 	        this.query = this.convertValues(source["query"], Query);
-	        this.value = source["value"];
-	        this.ack = this.convertValues(source["ack"], Ack);
 	        this.dirs = source["dirs"];
 	    }
 	

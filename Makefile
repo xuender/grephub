@@ -23,12 +23,11 @@ watch-test:
 clean:
 	rm -rf build/bin
 
-proto: protojs
+proto:
 	protoc --go_out=. pb/*.proto
 
-
 build: clean
-	wails build -platform linux/amd64,darwin/amd64,windows/amd64 -nsis
+	wails build -platform linux/amd64,windows/amd64 -nsis
 
 wire:
 	wire gen ${PACKAGE}/app

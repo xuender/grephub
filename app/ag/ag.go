@@ -4,8 +4,8 @@ import (
 	"bufio"
 
 	"github.com/samber/lo"
+	"github.com/xuender/grephub/app/grep"
 	"github.com/xuender/grephub/pb"
-	"github.com/xuender/grephub/search/grep"
 	"github.com/xuender/kit/types"
 )
 

@@ -2,7 +2,10 @@ package grep
 
 import "errors"
 
-var ErrNoPattern = errors.New("no pattern")
+var (
+	ErrNoPattern  = errors.New("no pattern")
+	ErrNoSearcher = errors.New("no searcher")
+)
 
 type InstallError string
 

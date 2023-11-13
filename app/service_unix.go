@@ -1,6 +1,6 @@
 //go:build !windows
 
-package search
+package app
 
 import "os/exec"
 
