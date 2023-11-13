@@ -5,9 +5,9 @@
   "homepage": "https://github.com/xuender/grephub",
   "scripts": {
     "ng": "ng",
-    "start": "ionic serve -- --proxy-config proxy.conf.json",
+    "start": "ionic serve",
     "build": "ng build --base-href ./",
-    "watch": "ng build --watch --proxy-config proxy.conf.json --configuration development",
+    "dev": "ionic serve --no-open",
     "test": "ng test",
     "lint": "ng lint"
   },
@@ -62,7 +62,6 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "protobufjs-cli": "^1.1.2",
     "ts-node": "^8.3.0",
     "typescript": "~5.0.2"
   },

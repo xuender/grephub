@@ -5,7 +5,6 @@ package app
 
 import (
 	"github.com/google/wire"
-	"github.com/xuender/gca"
 	"github.com/xuender/grephub/pb"
 	"github.com/xuender/grephub/search"
 	"github.com/xuender/grephub/search/ag"
@@ -14,7 +13,7 @@ import (
 	"github.com/xuender/kit/oss"
 )
 
-func InitApp() *gca.App[*pb.Msg] {
+func InitApp() *App {
 	wire.Build(
 		NewApp,
 		pb.NewConfig,
@@ -25,5 +24,5 @@ func InitApp() *gca.App[*pb.Msg] {
 		ugrep.NewUgrep,
 	)
 
-	return gca.NewApp[*pb.Msg]()
+	return &App{}
 }

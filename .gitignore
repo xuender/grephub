@@ -22,3 +22,5 @@ log.txt
 /dist
 cover.out
 cover.html
+build/bin
+

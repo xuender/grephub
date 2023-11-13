@@ -1,24 +1,52 @@
 package app
 
 import (
-	"embed"
+	"context"
+	"fmt"
 
-	"github.com/xuender/gca"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"github.com/xuender/grephub/pb"
 	"github.com/xuender/grephub/search"
 )
 
-//go:embed www
-var www embed.FS
+type App struct {
+	// nolint
+	ctx context.Context
+	ses *search.Service
+}
 
-func NewApp[M *pb.Msg](
-	ses *search.Service,
-) *gca.App[*pb.Msg] {
-	app := gca.NewApp[*pb.Msg]()
+func NewApp(ses *search.Service) *App {
+	return &App{ses: ses}
+}
 
-	app.Static(www, "www")
-	app.NewMsg = func() *pb.Msg { return &pb.Msg{} }
-	app.OnSay = ses.Say
+func (p *App) Startup(ctx context.Context) {
+	p.ctx = ctx
+}
 
-	return app
+func (p *App) Config() *pb.Msg {
+	return p.ses.Config()
+}
+
+func (p *App) AddDirs() {
+	p.ses.AddDirs()
+}
+
+func (p *App) DelDir(dir string) {
+	p.ses.DelDir(dir)
+}
+
+func (p *App) Open(path string) {
+	p.ses.Open(path)
+}
+
+func (p *App) alert() {
+	if err := recover(); err != nil {
+		runtime.EventsEmit(p.ctx, "alert", fmt.Sprintf("%v", err))
+	}
+}
+
+func (p *App) Query(query *pb.Query) *pb.Query {
+	defer p.alert()
+
+	return p.ses.Query(p.ctx, query)
 }

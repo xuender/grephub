@@ -48,7 +48,6 @@ import {
   trash,
 } from 'ionicons/icons';
 
-import { pb } from 'src/pb';
 import { AckComponent } from '../ack/ack.component';
 import { AnimatedNumberComponent } from '../animated-number/animated-number.component';
 import { ApiService } from '../api/api.service';
@@ -131,10 +130,13 @@ export class HomePage implements OnInit {
 
   selectionChanged(types: string[]) {
     switch (this.api.query.searcher) {
-      case pb.Searcher.ag:
+      case 2:
         this.api.query.agTypes = types;
         break;
-      case pb.Searcher.rg:
+      case 1:
+        this.api.query.ugTypes = types;
+        break;
+      case 0:
         this.api.query.rgTypes = types;
         break;
     }

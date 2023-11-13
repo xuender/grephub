@@ -17,8 +17,6 @@ import {
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 
-import { pb } from 'src/pb';
-
 const types = [
   [
     ['agda', ' *.agda, *.lagda'],
@@ -482,7 +480,7 @@ export class TypesComponent implements OnInit {
   @Input()
   selected: string[] | undefined | null = [];
   @Input()
-  searcher: pb.Searcher | null | undefined = pb.Searcher.rg;
+  searcher: number | undefined = 0;
   @Output()
   selectionCancel = new EventEmitter<void>();
   @Output()

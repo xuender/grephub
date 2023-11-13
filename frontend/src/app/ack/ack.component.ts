@@ -11,7 +11,7 @@ import escape from 'escape-html';
 import { addIcons } from 'ionicons';
 import { open } from 'ionicons/icons';
 
-import { pb } from 'src/pb';
+import { pb } from 'wailsjs/go/models';
 import { ApiService } from '../api/api.service';
 
 @Component({
@@ -30,7 +30,7 @@ import { ApiService } from '../api/api.service';
 })
 export class AckComponent {
   @Input()
-  item?: pb.IAck;
+  item?: pb.Ack;
   constructor(private api: ApiService) {
     addIcons({ open });
   }
@@ -40,10 +40,10 @@ export class AckComponent {
       return;
     }
 
-    this.api.doOpen(file);
+    this.open(file);
   }
 
-  html(mate: pb.IMate) {
+  html(mate: pb.Mate) {
     if (!mate.hits || !mate.text) {
       return '';
     }
