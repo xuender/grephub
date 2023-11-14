@@ -31,77 +31,16 @@ interface Langauge {
 const LANGUAGES: Langauge[] = [
   { code: 'text/plain', ext: ['txt', 'log'] },
   { code: 'cpp', ext: ['cc', 'hpp'] },
-  { code: 'css' },
-  { code: 'go' },
   { code: 'html', ext: ['htm', 'htma', 'xhtml', 'jsp'] },
   { code: 'ini', ext: ['toml', 'url'] },
-  { code: 'java' },
   { code: 'javascript', ext: ['js'] },
-  { code: 'json' },
   { code: 'markdown', ext: ['md'] },
-  { code: 'mysql' },
   { code: 'objective-c', ext: ['c', 'h'] },
-  { code: 'perl' },
-  { code: 'pgsql' },
-  { code: 'php' },
   { code: 'python', ext: ['py'] },
   { code: 'shell', ext: ['sh'] },
-  { code: 'sql' },
   { code: 'typescript', ext: ['ts'] },
   { code: 'xml', ext: ['svg'] },
-  { code: 'yaml' },
-  { code: 'abap' },
-  { code: 'apex' },
-  { code: 'azcli' },
-  { code: 'bat' },
-  { code: 'bicep' },
-  { code: 'cameligo' },
-  { code: 'clojure' },
-  { code: 'coffee' },
-  { code: 'csharp' },
-  { code: 'csp' },
-  { code: 'dart' },
-  { code: 'dockerfile' },
-  { code: 'ecl' },
-  { code: 'elixir' },
-  { code: 'fsharp' },
-  { code: 'graphql' },
-  { code: 'handlebars' },
-  { code: 'hcl' },
-  { code: 'julia' },
-  { code: 'kotlin' },
-  { code: 'less' },
-  { code: 'lexon' },
-  { code: 'liquid' },
-  { code: 'lua' },
-  { code: 'm3' },
-  { code: 'mips' },
-  { code: 'msdax' },
-  { code: 'pascal' },
-  { code: 'pascaligo' },
-  { code: 'postiats' },
-  { code: 'powerquery' },
   { code: 'powershell', ext: ['ps'] },
-  { code: 'pug' },
-  { code: 'r' },
-  { code: 'razor' },
-  { code: 'redis' },
-  { code: 'redshift' },
-  { code: 'restructuredtext' },
-  { code: 'ruby' },
-  { code: 'rust' },
-  { code: 'sb' },
-  { code: 'scala' },
-  { code: 'scheme' },
-  { code: 'scss' },
-  { code: 'solidity' },
-  { code: 'sophia' },
-  { code: 'st' },
-  { code: 'swift' },
-  { code: 'systemverilog' },
-  { code: 'tcl' },
-  { code: 'twig' },
-  { code: 'vb' },
 ];
 
 @Component({
@@ -197,26 +136,28 @@ export class CodePage implements OnInit {
   }
 
   private setLanguage(file: string) {
-    const fileExt = file.toLocaleLowerCase();
+    const name = file.toLocaleLowerCase();
+    const ext = name.substring(name.lastIndexOf('.') + 1);
+
     for (const lang of LANGUAGES) {
-      if (fileExt.endsWith(lang.code)) {
+      if (ext == lang.code) {
         this.options.language = lang.code;
-        console.log('code', lang.code);
 
         return;
       }
 
       if (lang.ext) {
-        for (const ext of lang.ext) {
-          if (fileExt.endsWith(ext)) {
+        for (const ex of lang.ext) {
+          if (ext == ex) {
             this.options.language = lang.code;
-            console.log('ext', ext);
 
             return;
           }
         }
       }
     }
+
+    this.options.language = ext;
   }
 
   editorInit(editor: MonacoStandaloneCodeEditor) {
