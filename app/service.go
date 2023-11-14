@@ -11,8 +11,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/ncruces/zenity"
-	"github.com/pkg/browser"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"github.com/xuender/grephub/app/ag"
 	"github.com/xuender/grephub/app/grep"
@@ -65,16 +63,14 @@ func (p *Service) Config() *pb.Config {
 }
 
 func (p *Service) AddDirs() {
-	dirs, err := zenity.SelectFileMultiple(
-		zenity.Filename("."),
-		zenity.Directory())
-	if err != nil || len(dirs) == 0 {
+	dir, err := runtime.OpenDirectoryDialog(p.ctx, runtime.OpenDialogOptions{Title: "Select search directory"})
+	if err != nil || dir == "" {
 		slog.Error("addDirs", "err", err)
 
 		return
 	}
 
-	p.cfg.Dirs = append(p.cfg.GetDirs(), dirs...)
+	p.cfg.Dirs = append(p.cfg.GetDirs(), dir)
 	p.cfg.Save()
 }
 
@@ -89,19 +85,28 @@ func (p *Service) DelDir(dir string) {
 }
 
 func (p *Service) Open(path string) {
-	if oss.IsWindows() {
-		los.Must0(browser.OpenFile(filepath.Dir(path)))
+	runtime.BrowserOpenURL(p.ctx, path)
+}
 
-		return
-	}
-
-	los.Must0(browser.OpenFile(path))
+func (p *Service) Dir(path string) {
+	runtime.BrowserOpenURL(p.ctx, filepath.Dir(path))
 }
 
 func (p *Service) recover() {
 	if err := recover(); err != nil {
 		runtime.EventsEmit(p.ctx, "alert", fmt.Sprintf("%v", err))
 	}
+}
+
+func (p *Service) File(file string) string {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		slog.Error("file", "err", err)
+
+		return err.Error()
+	}
+
+	return string(data)
 }
 
 func (p *Service) Query(query *pb.Query) *pb.Result {

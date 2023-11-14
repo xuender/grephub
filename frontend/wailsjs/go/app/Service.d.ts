@@ -12,6 +12,10 @@ export function Config():Promise<pb.Config>;
 
 export function DelDir(arg1:string):Promise<void>;
 
+export function Dir(arg1:string):Promise<void>;
+
+export function File(arg1:string):Promise<string>;
+
 export function Open(arg1:string):Promise<void>;
 
 export function Query(arg1:pb.Query):Promise<pb.Result>;

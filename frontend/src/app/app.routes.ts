@@ -10,4 +10,8 @@ export const routes: Routes = [
     redirectTo: '',
     pathMatch: 'full',
   },
+  {
+    path: 'code/:file',
+    loadComponent: () => import('./code/code.page').then((m) => m.CodePage),
+  },
 ];

@@ -22,6 +22,14 @@ export function DelDir(arg1) {
   return window['go']['app']['Service']['DelDir'](arg1);
 }
 
+export function Dir(arg1) {
+  return window['go']['app']['Service']['Dir'](arg1);
+}
+
+export function File(arg1) {
+  return window['go']['app']['Service']['File'](arg1);
+}
+
 export function Open(arg1) {
   return window['go']['app']['Service']['Open'](arg1);
 }

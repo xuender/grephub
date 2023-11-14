@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ file }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="open()" color="primary" title="open file">
+        <ion-icon name="open" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button (click)="dir()" color="secondary" title="open dir">
+        <ion-icon name="folder" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ file }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ngx-monaco-editor [options]="options" [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
+</ion-content>

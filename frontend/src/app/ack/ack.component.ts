@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   IonBadge,
   IonItem,
@@ -25,6 +26,7 @@ import { ApiService } from '../api/api.service';
     IonLabel,
     IonItemDivider,
     IonBadge,
+    RouterLink,
     CommonModule,
   ],
 })
