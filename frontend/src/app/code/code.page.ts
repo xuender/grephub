@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -12,11 +12,17 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import {
+  MonacoEditorComponent,
+  MonacoEditorModule,
+  MonacoStandaloneCodeEditor,
+} from '@materia-ui/ngx-monaco-editor';
 import { addIcons } from 'ionicons';
 import { folder, open } from 'ionicons/icons';
 
 import { Dir, File, Open } from 'wailsjs/go/app/Service';
+import { sleep } from '../api/time';
+import { ApiService } from '../api/api.service';
 
 interface Langauge {
   ext?: string[];
@@ -127,19 +133,60 @@ export class CodePage implements OnInit {
     mouseWheelZoom: true,
   };
   file = '';
-  constructor(route: ActivatedRoute) {
+  editor?: MonacoStandaloneCodeEditor;
+  constructor(private api: ApiService) {
     addIcons({ open, folder });
-    route.paramMap.subscribe(async (params) => {
-      const file = params.get('file');
-      if (!file) {
-        return;
+  }
+
+  async ngOnInit() {
+    if (!this.api.mate || !this.api.file) {
+      return;
+    }
+
+    this.file = this.api.file;
+    this.setLanguage(this.file);
+    this.code = await File(this.file);
+
+    await sleep(500);
+
+    if (!this.editor) {
+      return;
+    }
+
+    if (!this.api.mate.row) {
+      this.api.mate.row = 0;
+    }
+
+    const row = this.api.mate.row;
+
+    this.editor.setPosition({ lineNumber: row, column: 1 });
+    this.editor.focus();
+    this.editor.revealLine(row);
+
+    if (!this.api.mate.hits || !this.api.mate.hits.length) {
+      return;
+    }
+
+    const selections = [];
+    for (const hit of this.api.mate.hits) {
+      if (!hit.len) {
+        continue;
       }
 
-      this.setLanguage(file);
+      if (!hit.col) {
+        hit.col = 0;
+      }
 
-      this.code = await File(file);
-      this.file = file;
-    });
+      const col = hit.col + 1;
+      selections.push({
+        selectionStartLineNumber: row,
+        selectionStartColumn: col,
+        positionLineNumber: row,
+        positionColumn: col + hit.len,
+      });
+    }
+
+    this.editor.setSelections(selections);
   }
 
   async open() {
@@ -172,11 +219,7 @@ export class CodePage implements OnInit {
     }
   }
 
-  editorInit(editor: any) {
-    console.log('editor', editor);
-  }
-
-  ngOnInit() {
-    console.log('init');
+  editorInit(editor: MonacoStandaloneCodeEditor) {
+    this.editor = editor;
   }
 }

@@ -23,7 +23,7 @@ func NewApp(service *Service) *App {
 		helpMenu = appMenu.AddSubmenu("Help")
 	)
 
-	helpMenu.AddText("About", keys.CmdOrCtrl("a"), app.About)
+	helpMenu.AddText("About", nil, app.About)
 	helpMenu.AddSeparator()
 	helpMenu.AddText("Quit", keys.CmdOrCtrl("q"), app.Quit)
 	app.Menu = appMenu

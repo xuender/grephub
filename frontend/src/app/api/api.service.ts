@@ -1,5 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular/standalone';
+import {
+  AlertController,
+  NavController,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { informationCircle } from 'ionicons/icons';
 
@@ -32,9 +36,12 @@ export class ApiService {
   private _acks: pb.Ack[] = [];
   private size = loadSize;
   time = '';
+  mate?: pb.Mate;
+  file?: string;
   constructor(
     private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private nav: NavController
   ) {
     addIcons({ informationCircle });
 
@@ -232,5 +239,12 @@ export class ApiService {
       duration: 1000,
     });
     await toast.present();
+  }
+
+  async code(file: string, mate: pb.Mate) {
+    this.mate = mate;
+    this.file = file;
+
+    await this.nav.navigateForward('/code');
   }
 }

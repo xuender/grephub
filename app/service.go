@@ -63,7 +63,10 @@ func (p *Service) Config() *pb.Config {
 }
 
 func (p *Service) AddDirs() {
-	dir, err := runtime.OpenDirectoryDialog(p.ctx, runtime.OpenDialogOptions{Title: "Select search directory"})
+	dir, err := runtime.OpenDirectoryDialog(p.ctx, runtime.OpenDialogOptions{
+		Title:                "Select search directory",
+		CanCreateDirectories: false,
+	})
 	if err != nil || dir == "" {
 		slog.Error("addDirs", "err", err)
 

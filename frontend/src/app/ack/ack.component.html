@@ -3,7 +3,7 @@
     <ion-label>{{ item?.file }}</ion-label>
   </ion-item-divider>
 
-  <ion-item *ngFor="let m of item?.mates" button="true" [routerLink]="['/code', item?.file]">
+  <ion-item *ngFor="let m of item?.mates" button="true" (click)="code(m)">
     <ion-badge slot="start">{{ m.row }}</ion-badge>
     <ion-label [innerHTML]="html(m)"></ion-label>
   </ion-item>

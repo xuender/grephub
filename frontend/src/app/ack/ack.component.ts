@@ -37,12 +37,12 @@ export class AckComponent {
     addIcons({ open });
   }
 
-  open(file: string | undefined | null) {
-    if (!file) {
+  code(mate: pb.Mate) {
+    if (!mate || !this.item?.file) {
       return;
     }
 
-    this.api.open(file);
+    this.api.code(this.item.file, mate);
   }
 
   html(mate: pb.Mate) {
