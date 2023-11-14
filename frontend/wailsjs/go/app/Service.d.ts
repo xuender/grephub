@@ -14,4 +14,4 @@ export function DelDir(arg1:string):Promise<void>;
 
 export function Open(arg1:string):Promise<void>;
 
-export function Query(arg1:pb.Query):Promise<Array<pb.Ack>>;
+export function Query(arg1:pb.Query):Promise<pb.Result>;

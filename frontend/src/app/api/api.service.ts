@@ -176,7 +176,17 @@ export class ApiService {
     this.size = loadSize;
     const start = Date.now();
 
-    this._acks = await Query(this.query);
+    const res = await Query(this.query);
+    if (res) {
+      if (res.acks) {
+        this._acks = res.acks;
+      }
+
+      if (res.query) {
+        this.query = res.query;
+      }
+    }
+
     this.time = `${Date.now() - start}ms`;
     this.isRun = false;
   }

@@ -104,7 +104,7 @@ func (p *Service) recover() {
 	}
 }
 
-func (p *Service) Query(query *pb.Query) []*pb.Ack {
+func (p *Service) Query(query *pb.Query) *pb.Result {
 	defer p.recover()
 
 	searcher := p.getSearcher(query)
@@ -118,7 +118,7 @@ func (p *Service) Query(query *pb.Query) []*pb.Ack {
 		items = append(items, ack)
 	}
 
-	return items
+	return &pb.Result{Acks: items, Query: query}
 }
 
 func (p *Service) AsyncQuery(query *pb.Query) *pb.Query {
