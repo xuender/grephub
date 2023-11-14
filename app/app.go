@@ -17,16 +17,15 @@ type App struct {
 }
 
 func NewApp(service *Service) *App {
-	app := &App{
-		service: service,
-		Bind:    []any{service},
-	}
-	appMenu := menu.NewMenu()
-	fileMenu := appMenu.AddSubmenu("File")
+	var (
+		app      = &App{service: service, Bind: []any{service}}
+		appMenu  = menu.NewMenu()
+		helpMenu = appMenu.AddSubmenu("Help")
+	)
 
-	fileMenu.AddText("&Open", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {})
-	fileMenu.AddSeparator()
-	fileMenu.AddText("Quit", keys.CmdOrCtrl("q"), app.Quit)
+	helpMenu.AddText("About", keys.CmdOrCtrl("a"), app.About)
+	helpMenu.AddSeparator()
+	helpMenu.AddText("Quit", keys.CmdOrCtrl("q"), app.Quit)
 	app.Menu = appMenu
 
 	return app
@@ -34,6 +33,10 @@ func NewApp(service *Service) *App {
 
 func (p *App) Quit(_ *menu.CallbackData) {
 	runtime.Quit(p.ctx)
+}
+
+func (p *App) About(_ *menu.CallbackData) {
+	runtime.EventsEmit(p.ctx, "about", true)
 }
 
 func (p *App) Startup(ctx context.Context) {

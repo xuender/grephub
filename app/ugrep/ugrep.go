@@ -25,7 +25,7 @@ func NewUgrep() *Ugrep {
 }
 
 func (p *Ugrep) Cmd(query *pb.Query) (string, []string) {
-	args := []string{"--json", query.GetPattern(), "-r"}
+	args := []string{"--json", query.GetPattern(), "-r", "--ignore-files", "--no-hidden", "-I"}
 
 	if query.GetMaxCount() > 0 {
 		args = append(args, fmt.Sprintf("-znum=%d", query.GetMaxCount()))

@@ -27,7 +27,9 @@ proto:
 	protoc --go_out=. pb/*.proto
 
 build: clean
-	wails build -platform linux/amd64,windows/amd64 -nsis
+	wails build -platform linux/amd64,windows/amd64 -nsis -ldflags \
+	"-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
+  -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'"
 
 wire:
 	wire gen ${PACKAGE}/app

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   InfiniteScrollCustomEvent,
@@ -50,11 +50,12 @@ import {
   trash,
 } from 'ionicons/icons';
 
+import { EventsOff, EventsOn, WindowShow } from 'wailsjs/runtime/runtime';
 import { AboutComponent } from '../about/about.component';
 import { AckComponent } from '../ack/ack.component';
 import { ApiService } from '../api/api.service';
-import { TypesComponent } from '../types/types.component';
 import { Searchers } from '../api/searcher';
+import { TypesComponent } from '../types/types.component';
 
 const sleep = (msec: number) =>
   new Promise<void>((resolve) => setTimeout(() => resolve(), msec));
@@ -107,7 +108,7 @@ const sleep = (msec: number) =>
     IonNote,
   ],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   @ViewChild('modal', { static: true })
   typesModal!: IonModal;
   @ViewChild('menu', { static: true })
@@ -119,6 +120,13 @@ export class HomePage implements OnInit {
   constructor(public api: ApiService, private modalCtrl: ModalController) {
     addIcons({ cog, searchCircle, addCircle, trash, toggle, closeCircle });
     this.api.onStop$.subscribe((_) => this.onClose());
+    EventsOn('about', () => {
+      this.about();
+    });
+  }
+
+  ngOnDestroy() {
+    EventsOff('about');
   }
 
   async about() {
@@ -131,7 +139,7 @@ export class HomePage implements OnInit {
 
   async ngOnInit() {
     if (this.menu) {
-      this.menu.open();
+      await this.menu.open();
     }
   }
 

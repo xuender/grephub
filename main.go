@@ -8,6 +8,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/xuender/grephub/app"
 	"github.com/xuender/kit/los"
+	"github.com/xuender/kit/oss"
 )
 
 //go:embed all:frontend/www
@@ -22,16 +23,12 @@ func main() {
 	app := app.InitApp()
 
 	los.Must0(wails.Run(&options.App{
-		Title:  "Grep Hub",
-		Width:  _width,
-		Height: _height,
-		Menu:   app.Menu,
-		AssetServer: &assetserver.Options{
-			Assets: assets,
-		},
-		// nolint
-		BackgroundColour: &options.RGBA{R: 27, G: 33, B: 54, A: 1},
-		OnStartup:        app.Startup,
-		Bind:             app.Bind,
+		Title:       "Grep Hub " + oss.Version,
+		Width:       _width,
+		Height:      _height,
+		Menu:        app.Menu,
+		AssetServer: &assetserver.Options{Assets: assets},
+		OnStartup:   app.Startup,
+		Bind:        app.Bind,
 	}))
 }

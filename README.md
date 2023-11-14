@@ -8,6 +8,10 @@
 
 ✨ **`xuender/grephub` supports multiple popular search tools**
 
+- [ripgrep (rg)][rg-url]
+- [ugrep (ug)][ug-url]
+- [The Silver Searcher (ag)][ag-url]
+
 ## 🚀 Install
 
 ```shell
@@ -17,6 +21,7 @@ go install github.com/xuender/grephub@latest
 ## 💡 Usage
 
 ![UI](doc/ui.png)
+![UI](doc/search.png)
 
 ## 👤 Contributors
 
@@ -39,3 +44,6 @@ go install github.com/xuender/grephub@latest
 [contributors-svg]: https://contrib.rocks/image?repo=xuender/grephub
 [lines-svg]: https://sloc.xyz/github/xuender/grephub
 [lines-url]: https://github.com/boyter/scc
+[rg-url]: https://github.com/BurntSushi/ripgrep
+[ug-url]: https://github.com/Genivia/ugrep
+[ag-url]: https://github.com/ggreer/the_silver_searcher
