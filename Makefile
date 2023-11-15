@@ -47,6 +47,8 @@ build-deb:
 	mkdir -p ${DEB}/usr/share/applications
 
 	cp ${OUT}/${APP}-linux-amd64 ${DEB}/usr/local/bin/${APP}
+	mkdir -p ${DEB}/usr/share/pixmaps
+	cp build/appicon.png ${DEB}/usr/share/pixmaps/${APP}.png
 	mkdir -p ${DEB}/usr/share/icons/hicolor/512x512/apps
 	mkdir -p ${DEB}/usr/share/icons/hicolor/256x256/apps
 	mkdir -p ${DEB}/usr/share/icons/hicolor/192x192/apps
@@ -73,11 +75,12 @@ build-deb:
 	convert build/appicon.png -resize 16x16 ${DEB}/usr/share/icons/hicolor/16x16/apps/${APP}.png
 
 	echo "[Desktop Entry]" > ${DESKTOP}
-	echo "Version=${VERSION}" >> ${DESKTOP}
+	echo "Version=1.0" >> ${DESKTOP}
 	echo "Type=Application" >> ${DESKTOP}
-	echo "Name=GrepHub" >> ${DESKTOP}
+	echo "Name=Grep Hub" >> ${DESKTOP}
 	echo "Exec=${APP}" >> ${DESKTOP}
 	echo "Icon=${APP}" >> ${DESKTOP}
+	echo "StartupNotify=false" >> ${DESKTOP}
 	echo "Terminal=false" >> ${DESKTOP}
 	echo "StartupWMClass=Lorca" >> ${DESKTOP}
 
