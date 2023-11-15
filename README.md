@@ -6,7 +6,7 @@
 [![godoc][godoc-svg]][godoc-url]
 [![License][license-svg]][license-url]
 
-✨ **`xuender/grephub` supports multiple popular search tools**
+✨ **`xuender/grephub` is a GUI that supports multiple popular search tools.**
 
 - [ripgrep (rg)][rg-url]
 - [ugrep (ug)][ug-url]

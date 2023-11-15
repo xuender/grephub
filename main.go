@@ -12,7 +12,7 @@ import (
 )
 
 //go:embed all:frontend/www
-var assets embed.FS
+var _assets embed.FS
 
 const (
 	_width  = 1024
@@ -21,14 +21,16 @@ const (
 
 func main() {
 	app := app.InitApp()
-
-	los.Must0(wails.Run(&options.App{
+	options := &options.App{
 		Title:       "Grep Hub " + oss.Version,
 		Width:       _width,
 		Height:      _height,
 		Menu:        app.Menu,
-		AssetServer: &assetserver.Options{Assets: assets},
+		AssetServer: &assetserver.Options{Assets: _assets},
 		OnStartup:   app.Startup,
 		Bind:        app.Bind,
-	}))
+	}
+
+	setOptions(options)
+	los.Must0(wails.Run(options))
 }

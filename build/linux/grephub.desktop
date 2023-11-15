@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=0.1.4
+Type=Application
+Terminal=false
+Exec=/usr/local/bin/grephub
+Name=Grep Hub
+Comment=Grep Hub
+Icon=/opt/grephub/appicon.png
