@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: v16.14.2
           registry-url: https://registry.npmjs.com/
-      - name: Install Vue Dependencies
+      - name: Install Ionic Dependencies
         run: |
           cd frontend
           npm install
@@ -52,7 +52,7 @@ jobs:
         run: |
           make build-deb
           cd ${{ matrix.binary-path }}
-          ren grephub.deb ${{ matrix.binary-name }}${{ matrix.format }}
+          mv grephub.deb ${{ matrix.binary-name }}${{ matrix.format }}
       - name: Build Windows
         if: ${{ matrix.runs-on == 'windows-latest' }}
         run: |
