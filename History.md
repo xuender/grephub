@@ -1,4 +1,17 @@
 
+0.1.4 / 2023-11-16
+==================
+
+* chore: release
+* fix: logo
+* chore: deb
+* feat: monaco min
+* feat: setPosition
+* feat: show code
+* refactor: Query return Result
+* chore: trunk
+* chore: trunk
+
 0.1.3 / 2023-11-14
 ==================
 
