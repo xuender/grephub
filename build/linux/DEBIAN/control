@@ -1,0 +1,11 @@
+Package: grephub
+Version: VER
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: ender xu<xuender@gmail.com>
+Depends: ripgrep
+Recommends: ugrep, silversearcher-ag
+Homepage: https://github.com/xuender/grephub
+Description: GrepHub is a GUI that supports multiple popular search tools
+

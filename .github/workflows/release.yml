@@ -1,0 +1,100 @@
+name: Release
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            binary-name: grephub_linux_amd64_${{ github.ref_name }}
+            binary-path: ./build/bin/
+            format: ".deb"
+          - runs-on: windows-latest
+            binary-name: grephub_windows_amd64_${{ github.ref_name }}
+            binary-path: ./build/bin/
+            format: ".exe"
+          - runs-on: macos-latest
+            binary-name: grephub_darwin_amd64_${{ github.ref_name }}
+            binary-path: ./build/bin/
+            format: ".app"
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: v16.14.2
+          registry-url: https://registry.npmjs.com/
+      - name: Install Vue Dependencies
+        run: |
+          cd frontend
+          npm install
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+      - name: Set up Linux Environment
+        if: ${{ matrix.runs-on == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get install libwebkit2gtk-4.0-dev
+          sudo apt install libgtk-3-dev
+          sudo apt install nsis
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.6.0
+      - name: Check Environment
+        run: wails doctor
+      - name: Build Linux
+        if: ${{ matrix.runs-on == 'ubuntu-latest' }}
+        run: |
+          make build-deb
+          cd ${{ matrix.binary-path }}
+          ren grephub.deb ${{ matrix.binary-name }}${{ matrix.format }}
+      - name: Build Windows
+        if: ${{ matrix.runs-on == 'windows-latest' }}
+        run: |
+          wails build --clean --platform windows -webview2 Embed -ldflags "-X 'github.com/xuender/kit/oss.Version=${{ github.ref_name }}'"
+          cd ${{ matrix.binary-path }}
+          ren grephub.exe ${{ matrix.binary-name }}${{ matrix.format }}
+      - name: Build MacOs
+        if: ${{ matrix.runs-on == 'macos-latest' }}
+        run: |
+          wails build --clean --platform darwin/amd64
+          cd ${{ matrix.binary-path }}
+          mv grephub.app ${{ matrix.binary-name }}${{ matrix.format }}
+      - name: Archive Release
+        uses: thedoctor0/zip-release@main
+        with:
+          type: zip
+          filename: ${{ matrix.binary-name }}.zip
+          directory: ${{ matrix.binary-path }}
+          path: .
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload Release Asset
+        if: ${{ matrix.runs-on != 'macos-latest' }}
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ matrix.binary-path }}${{ matrix.binary-name }}${{ matrix.format }}
+          asset_name: ${{ matrix.binary-name }}${{ matrix.format }}
+          asset_content_type: application/octet-stream
+      - name: Upload Release Zip Asset
+        id: upload-release-zip-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ matrix.binary-path }}${{ matrix.binary-name }}.zip
+          asset_name: ${{ matrix.binary-name }}.zip
+          asset_content_type: application/zip
