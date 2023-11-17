@@ -21,5 +21,9 @@
       <ion-title size="large">{{ file }}</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ngx-monaco-editor [options]="options" [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
+  <ngx-monaco-editor
+    [options]="options"
+    [(ngModel)]="code"
+    (init)="editorInit($event)"
+  ></ngx-monaco-editor>
 </ion-content>

@@ -26,7 +26,7 @@ proto:
 	protoc --go_out=. pb/*.proto
 
 build-linux: clean
-	wails build -platform linux/amd64 -ldflags \
+	CGO_ENABLED=0 wails build -platform linux/amd64 -ldflags \
 	"-X 'github.com/xuender/kit/oss.Version=${VERSION}' \
   -X 'github.com/xuender/kit/oss.BuildTime=${BUILD_TIME}'"
 
