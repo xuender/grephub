@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import {
   IonButton,
   IonButtons,
+  IonCol,
   IonContent,
   IonFooter,
+  IonGrid,
   IonHeader,
   IonIcon,
   IonInput,
@@ -15,6 +17,7 @@ import {
   IonList,
   IonListHeader,
   IonModal,
+  IonRow,
   IonSearchbar,
   IonSelect,
   IonSelectOption,
@@ -29,6 +32,7 @@ import { addCircle, searchCircle, toggle, trash } from 'ionicons/icons';
 import { ApiService } from '../api/api.service';
 import { Searchers } from '../api/searcher';
 import { TypesComponent } from '../types/types.component';
+import { sleep } from '../api/time';
 
 @Component({
   selector: 'app-search',
@@ -57,19 +61,27 @@ import { TypesComponent } from '../types/types.component';
     IonItemGroup,
     IonSelectOption,
     IonModal,
+    IonGrid,
+    IonRow,
+    IonCol,
     TypesComponent,
   ],
 })
 export class SearchPage implements OnInit {
   @ViewChild('modal', { static: true })
   typesModal!: IonModal;
+  @ViewChild('search', { static: true })
+  search!: IonSearchbar;
   isDel = false;
   searchers = Searchers;
   constructor(public api: ApiService, private navCtrl: NavController) {
     addIcons({ searchCircle, addCircle, trash, toggle });
   }
 
-  ngOnInit() {}
+  async ngOnInit() {
+    await sleep(500);
+    await this.search.setFocus();
+  }
 
   query() {
     this.navCtrl.navigateForward('/result');

@@ -28,9 +28,7 @@ import { addIcons } from 'ionicons';
 import { searchCircle } from 'ionicons/icons';
 import { AckComponent } from '../ack/ack.component';
 import { ApiService } from '../api/api.service';
-
-const sleep = (msec: number) =>
-  new Promise<void>((resolve) => setTimeout(() => resolve(), msec));
+import { sleep } from '../api/time';
 
 @Component({
   selector: 'app-result',
