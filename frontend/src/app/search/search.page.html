@@ -1,0 +1,99 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Grep Hub</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Grep Hub</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>
+        <ion-searchbar
+          [disabled]="api.isRun"
+          slot="start"
+          placeholder="搜索"
+          [(ngModel)]="api.query.pattern"
+          enterkeyhint="search"
+          (keyup.enter)="query()"
+          #search
+        ></ion-searchbar>
+      </ion-label>
+      <ion-button
+        slot="end"
+        color="primary"
+        [disabled]="api.isRun"
+        (click)="query()"
+        fill="clear"
+      >
+        <ion-icon name="search-circle" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Searcher" [(ngModel)]="api.query.searcher">
+        <ion-select-option *ngFor="let s of searchers" [value]="s.id">
+          {{ s.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item [button]="true" [detail]="false" id="select-type">
+      <ion-label>Types</ion-label>
+      <div slot="end" id="selected-type">{{ api.types }}</div>
+    </ion-item>
+    <ion-item>
+      <ion-input
+        label="Max Count"
+        type="number"
+        [(ngModel)]="api.query.maxCount"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Search dirs</ion-label>
+      <ion-button slot="end" color="primary" (click)="api.addDirs()">
+        <ion-icon name="add-circle" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" color="danger" (click)="isDel=!isDel">
+        <ion-icon [name]="isDel?'toggle':'trash'" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-item-group *ngIf="!isDel">
+      <ion-item *ngFor="let p of api.dirs">
+        <ion-toggle
+          labelPlacement="start"
+          [checked]="api.hasDir(p)"
+          (ionChange)="api.addDir(p)"
+          >{{ p }}</ion-toggle
+        >
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="isDel">
+      <ion-item *ngFor="let p of api.dirs">
+        <ion-label>{{ p }} </ion-label>
+        <ion-button
+          *ngIf="!api.hasDir(p)"
+          color="danger"
+          (click)="api.delDir(p)"
+        >
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+</ion-content>
+
+<ion-modal trigger="select-type" #modal>
+  <ng-template>
+    <app-types
+      class="ion-page"
+      [selected]="api.types"
+      [searcher]="api.query.searcher"
+      (selectionChange)="selectionChanged($event)"
+      (selectionCancel)="modal.dismiss()"
+    ></app-types>
+  </ng-template>
+</ion-modal>

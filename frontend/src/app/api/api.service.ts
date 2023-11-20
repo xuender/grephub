@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import {
   AlertController,
+  ModalController,
   NavController,
   ToastController,
 } from '@ionic/angular/standalone';
@@ -10,13 +11,15 @@ import { informationCircle } from 'ionicons/icons';
 import {
   AddDirs,
   AsyncQuery,
-  Query,
   Config,
   DelDir,
   Open,
+  Query,
 } from 'wailsjs/go/app/Service';
 import { pb } from 'wailsjs/go/models';
 import { EventsOn } from 'wailsjs/runtime/runtime';
+import { AboutComponent } from '../about/about.component';
+
 const loadSize = 100;
 @Injectable({
   providedIn: 'root',
@@ -41,12 +44,16 @@ export class ApiService {
   constructor(
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
+    private modalCtrl: ModalController,
     private nav: NavController
   ) {
     addIcons({ informationCircle });
 
     this.config();
 
+    EventsOn('about', () => {
+      this.about();
+    });
     EventsOn('alert', (msg) => {
       this.isRun = false;
       this.onAlert(msg);
@@ -58,6 +65,14 @@ export class ApiService {
     EventsOn('ack', (acks: pb.Ack[]) => {
       this._acks.push(...acks);
     });
+  }
+
+  async about() {
+    const modal = await this.modalCtrl.create({
+      component: AboutComponent,
+    });
+
+    await modal.present();
   }
 
   async addDirs() {
@@ -173,9 +188,10 @@ export class ApiService {
     this.query.paths.push(dir);
   }
 
-  doQuery() {
+  async doQuery() {
     // return this.asyncQuery();
-    return this.Query();
+    await this.Query();
+    this.onStop$.emit();
   }
 
   async Query() {

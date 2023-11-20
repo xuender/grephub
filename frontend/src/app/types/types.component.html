@@ -19,11 +19,18 @@
 
 <ion-content color="light" class="ion-padding">
   <ion-list id="modal-list" [inset]="true">
-    <ion-item *ngFor="let kv of filteredItems">
+    <ion-item
+      *ngFor="let kv of filteredItems"
+      [color]="isChecked(kv[0]) ? 'success' : ''"
+    >
       <ion-label>{{ kv[0] }}</ion-label>
-      <ion-checkbox slot="end" [value]="kv[0]" [checked]="isChecked(kv[0])" (ionChange)="checkboxChange($event)">{{
-        kv[1]
-        }}</ion-checkbox>
+      <ion-checkbox
+        slot="end"
+        [value]="kv[0]"
+        [checked]="isChecked(kv[0])"
+        (ionChange)="checkboxChange($event)"
+        >{{ kv[1] }}</ion-checkbox
+      >
     </ion-item>
   </ion-list>
 </ion-content>

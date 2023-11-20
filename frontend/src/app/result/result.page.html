@@ -1,0 +1,55 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-searchbar
+      [disabled]="api.isRun"
+      slot="start"
+      placeholder="搜索"
+      [(ngModel)]="api.query.pattern"
+      enterkeyhint="search"
+      (keyup.enter)="query()"
+      #search
+    ></ion-searchbar>
+    <ion-progress-bar *ngIf="api.isRun" type="indeterminate"></ion-progress-bar>
+    <ion-title>{{ api.query.pattern }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" [disabled]="api.isRun" (click)="query()">
+        <ion-icon name="search-circle" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ api.query.pattern }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list>
+    <app-ack [item]="ack" *ngFor="let ack of api.acks"></app-ack>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+
+<ion-footer>
+  <ion-item>
+    <ion-label>
+      Pattern <ion-text color="danger">{{ api.query.pattern }}</ion-text>
+    </ion-label>
+    <ion-label>
+      File <ion-text color="secondary">{{ api.length }}</ion-text>
+    </ion-label>
+    <ion-label>
+      Count <ion-text color="primary">{{ api.count }}</ion-text>
+    </ion-label>
+    <ion-label>
+      Time <ion-text color="tertiary">{{ api.time }}</ion-text>
+    </ion-label>
+  </ion-item>
+</ion-footer>
