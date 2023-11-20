@@ -21,7 +21,6 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
-  LoadingController,
 } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
@@ -62,7 +61,7 @@ import { sleep } from '../api/time';
 export class ResultPage implements OnInit {
   @ViewChild('search', { static: true })
   search!: IonSearchbar;
-  constructor(public api: ApiService, private loadingCtrl: LoadingController) {
+  constructor(public api: ApiService) {
     this.api.onStop$.subscribe((_) => this.onClose());
     addIcons({ searchCircle });
   }
@@ -73,15 +72,8 @@ export class ResultPage implements OnInit {
     console.log('focus');
   }
 
-  async query() {
-    const loading = await this.loadingCtrl.create({ message: 'search...' });
-    await loading.present();
-    await this.api.doQuery();
-    await loading.dismiss();
-  }
-
   ngOnInit() {
-    this.query();
+    this.api.doQuery();
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {

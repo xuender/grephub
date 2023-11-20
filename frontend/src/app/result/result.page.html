@@ -9,13 +9,17 @@
       placeholder="搜索"
       [(ngModel)]="api.query.pattern"
       enterkeyhint="search"
-      (keyup.enter)="query()"
+      (keyup.enter)="api.doQuery()"
       #search
     ></ion-searchbar>
     <ion-progress-bar *ngIf="api.isRun" type="indeterminate"></ion-progress-bar>
     <ion-title>{{ api.query.pattern }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button color="primary" [disabled]="api.isRun" (click)="query()">
+      <ion-button
+        color="primary"
+        [disabled]="api.isRun"
+        (click)="api.doQuery()"
+      >
         <ion-icon name="search-circle" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
