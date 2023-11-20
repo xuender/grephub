@@ -1,4 +1,20 @@
 
+0.1.6 / 2023-11-20
+==================
+
+* doc: icon
+* doc: images
+* feat: lib web page
+* fix: LoadingController
+* feat: search options
+* feat: add Result
+* syte: format
+* syte: format
+* feat: www
+* chore: go
+* chore: go
+* chore: go
+
 0.1.5 / 2023-11-16
 ==================
 
