@@ -20,8 +20,9 @@ go install github.com/xuender/grephub@latest
 
 ## 💡 Usage
 
-![UI](doc/ui.png)
 ![UI](doc/search.png)
+![UI](doc/result.png)
+![UI](doc/code.png)
 
 ## 👤 Contributors
 
